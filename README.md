@@ -23,3 +23,32 @@
 
     Nix also offers atomic upgrades and rollbacks, allowing you to easily switch between different versions of the Reddit post monitoring tool without any issues. This ensures that you always have the latest features and improvements while also giving you the option to revert to a previous version if needed.
 
+
+## Marking Positive and Negative Examples
+
+- How do you mark a Reddit post as a positive or negative example?
+    - To mark a Reddit post as a positive or negative example, you'll need to first create or modify the YAML file. The YAML file should follow this format:
+
+    ```
+    {{topic}}:
+      training:
+        {{URL}}:
+          text: |
+            {{text}}
+          score: {{score}}
+      threshold: {{threshold}}
+    ```
+
+    Replace `{{topic}}`, `{{URL}}`, `{{text}}`, `{{score}}`, and `{{threshold}}` with the appropriate values for the post you want to mark. For example:
+
+    ```
+    example_topic:
+      training:
+        https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+          text: |
+            Post content here...
+          score: 0.9
+      threshold: 0.8
+    ```
+
+    Once you've added the entry to the YAML file, save the file and use it as a configuration for the Reddit post monitoring tool. The tool will then use the information from the YAML file to mark the post and train the machine learning model accordingly.
