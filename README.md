@@ -52,3 +52,8 @@
     ```
 
     Once you've added the entry to the YAML file, save the file and use it as a configuration for the Reddit post monitoring tool. The tool will then use the information from the YAML file to mark the post and train the machine learning model accordingly.
+
+## Sourcing Similar Posts
+
+- How does the tool find similar posts?
+    - The tool use a text similarity cosine similarity to compare the text of the positive examples with the text of the new posts.
