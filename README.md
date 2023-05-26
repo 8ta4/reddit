@@ -53,6 +53,25 @@
 
     Once you've added the entry to the YAML file, save the file and use it as a configuration for the Reddit post monitoring tool. The tool will then use the information from the YAML file to mark the post and train the machine learning model accordingly.
 
+- Can I mark multiple positive and negative examples for the same topic?
+    - Absolutely! To do this, just add more entries under the `training` section in the YAML file, for the same topic. Don't forget to include the URL, text, and score for each example. It'll look something like this:
+
+    ```
+    example_topic:
+      training:
+        https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+          text: |
+            Post content here...
+          score: 0.9
+        https://www.reddit.com/r/example/comments/456def/another_post_title/:
+          text: |
+            Another post content...
+          score: 0.2
+      threshold: 0.8
+    ```
+
+    The tool will then use all these examples to train the machine learning model and find similar posts for you.
+
 ## Sourcing Similar Posts
 
 - How does the tool find similar posts?
@@ -70,3 +89,4 @@
     4. Set up a notification method within the watch tool, like sending an email or showing a desktop notification when the file changes.
 
 By doing this, you'll stay updated on similar posts as they appear on the monitored subreddit. And as the tool evolves and more features are added, you can expect even better notification options in the future.
+
