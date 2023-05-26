@@ -8,3 +8,18 @@
 - How does it work?
     - It uses some fancy stuff like natural language processing and machine learning to understand what Reddit posts are saying and how they relate to your product. You can mark posts as positive or negative examples to teach the tool what kind of posts you are looking for. The tool will then score the posts based on how similar they are to your examples and notify you when there is a match.
 
+## Installation
+
+- How do you install the tool?
+    - The tool is packaged as a Nix package, so you don't have to worry about specifying dependencies yourself. Nix takes care of all that for you. To install the Reddit post monitoring tool, you just need to have Nix installed on your system. If you don't have it yet, you can download and install it from the [Nix download page](https://nixos.org/download.html).
+
+    Once you have Nix installed, you can install the Reddit tool by running the following command in your terminal:
+    ```
+    $ nix-env -iA TODO
+    ```
+
+- What are the benefits of using a Nix package?
+    - Using a Nix package for the Reddit post monitoring tool has several benefits. For one, Nix takes care of all dependencies, so you don't have to worry about specifying them yourself. This makes the installation process easier and more reliable.
+
+    Nix also offers atomic upgrades and rollbacks, allowing you to easily switch between different versions of the Reddit post monitoring tool without any issues. This ensures that you always have the latest features and improvements while also giving you the option to revert to a previous version if needed.
+
