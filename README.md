@@ -96,5 +96,3 @@ In the MVP, the tool won't send real-time notifications like email or in-app not
 2. Install your chosen file watch tool, following its documentation.
 3. Configure the tool to monitor the file where similar posts are added.
 4. Set up a notification method within the watch tool, like sending an email or showing a desktop notification when the file changes.
-
-By doing this, you'll stay updated on similar posts as they appear on the monitored subreddit.
