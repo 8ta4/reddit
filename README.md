@@ -2,22 +2,9 @@
 
 ## Introduction
 
-- What's the main goal of this tool?
-   - The idea is to simplify our Reddit experience. With this tool, we can mark interesting posts and get notified when new, similar ones appear. It's like having a personal assistant keeping track of the discussions that matter to us.
+- What is this tool all about?
+    - This tool is a game-changer for Reddit marketing. It lets you find Reddit posts that talk about a problem that your product can solve. You just need to mark a post from the past and the tool will keep an eye on new posts that are similar to it. When it finds one, it will let you know so you can jump in and show off your product.
 
-## Features Overview
+- How does it work?
+    - It uses some fancy stuff like natural language processing and machine learning to understand what Reddit posts are saying and how they relate to your product. You can mark posts as positive or negative examples to teach the tool what kind of posts you are looking for. The tool will then score the posts based on how similar they are to your examples and notify you when there is a match. You can also tweak the tool's settings to make it more accurate and efficient.
 
-- So, what does this tool do exactly?
-   - You know how we sometimes find interesting posts on Reddit and wish we could get notified when similar ones come up? This tool does that. It lets you mark posts and keeps an eye on similar discussions for you.
-
-- How do I tell the tool what kind of posts I'm interested in?
-   - You can provide positive and negative examples. Positive examples are posts that are relevant to your product, while negative examples are posts that are not.
-
-- Will it look for similar posts in any subreddit, or just the ones I'm interested in?
-   - The tool focuses on the same subreddit as your positive examples.
-
-- Where does the tool store the examples I provide?
-   - It stores them locally, so you don't have to worry about external storage or services. You can keep track of your examples right on your computer.
-
-- How do I mark a post as a positive or negative example?
-   - Just provide the post's URL along with a flag specifying the type of example.
