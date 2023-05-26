@@ -17,6 +17,7 @@ It uses fancy stuff like natural language processing and machine learning to und
 The tool comes as a Nix package, so you don't have to worry about dependencies. Just make sure you have Nix installed on your system. If you don't, you can download and install it from the [Nix download page](https://nixos.org/download.html).
 
 Once you've got Nix, just run this command in your terminal to install the Reddit tool:
+
 ```
 $ nix-env -iA TODO
 ```
