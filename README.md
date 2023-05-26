@@ -57,3 +57,16 @@
 
 - How does the tool find similar posts?
     - The tool use a text similarity cosine similarity to compare the text of the positive examples with the text of the new posts.
+
+## Real-time Notifications
+
+- So, how will the tool notify me of similar posts?
+    - In the MVP, the tool won't send real-time notifications like email, in-app notifications, or a Chrome extension. Instead, it'll add similar posts to a file. You can set up your own watch tools to keep an eye on this file and notify you when there are changes. That way, you can customize your notifications and still stay in the loop.
+
+- How can I set up a watch tool to keep an eye on the file?
+    1. First, pick a file watch tool that works best for you, like [fswatch](https://emcrisostomo.github.io/fswatch/) for macOS or [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) for Linux.
+    2. Install your chosen file watch tool on your system, following the instructions in its documentation.
+    3. Configure the tool to monitor the file where similar posts are added.
+    4. Set up a notification method within the watch tool, like sending an email or showing a desktop notification when the file changes.
+
+By doing this, you'll stay updated on similar posts as they appear on the monitored subreddit. And as the tool evolves and more features are added, you can expect even better notification options in the future.
