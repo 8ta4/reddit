@@ -56,7 +56,9 @@ example_topic:
   threshold: 0.8
 ```
 
-Save the file, and use it as a config for the Reddit tool. The tool will then use the info from the YAML file to mark the post and train the machine learning model.
+> So, where should I put the YAML configuration file?
+
+You'll want to store it at `~/.config/reddit/config.yaml`. This location is pretty standard for configuration files and will make it easy for you to find and manage.
 
 > Can I mark multiple positive and negative examples for the same topic?
 
