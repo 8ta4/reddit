@@ -92,6 +92,10 @@ It uses cosine similarity to compare the text of the positive examples with the 
 
 In the MVP, the tool won't send real-time notifications like email or in-app notifications. Instead, it'll add similar posts to a file. You can set up your own watch tools to keep an eye on this file and notify you when there are changes. That way, you can customize your notifications and still stay in the loop.
 
+> Hey, so where does the tool create that file with all the similar posts?
+
+It'll automatically generate the file at `~/.config/reddit/posts.txt`. It's in the same folder as the configuration file, so it's easy to find and manage.
+
 > How can I set up a watch tool to keep an eye on the file?
 
 1. Pick a file watch tool that works for you, like [fswatch](https://emcrisostomo.github.io/fswatch/) for macOS or [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) for Linux.
