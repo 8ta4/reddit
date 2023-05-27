@@ -94,7 +94,7 @@ In the MVP, the tool won't send real-time notifications like email or in-app not
 
 > Hey, so where does the tool create that file with all the similar posts?
 
-It'll automatically generate the file at `~/.config/reddit/posts.txt`. It's in the same folder as the configuration file, so it's easy to find and manage.
+It'll automatically generate the file at `~/.local/share/reddit/posts.txt`.
 
 > How can I set up a watch tool to keep an eye on the file?
 
