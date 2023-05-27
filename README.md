@@ -36,24 +36,20 @@ You'll need to create or modify a YAML file to mark a post. The file should look
 
 ```
 {{topic}}:
-  training:
-    {{URL}}:
-      text: |
-        {{text}}
-      score: {{score}}
-  threshold: {{threshold}}
+  {{URL}}:
+    text: |
+      {{text}}
+    threshold: {{threshold}}
 ```
 
-Replace `{{topic}}`, `{{URL}}`, `{{text}}`, `{{score}}`, and `{{threshold}}` with the right values for the post you want to mark. For example:
+Replace `{{topic}}`, `{{URL}}`, `{{text}}`, and `{{threshold}}` with the right values for the post you want to mark. For example:
 
 ```
 example_topic:
-  training:
-    https://www.reddit.com/r/example/comments/123abc/some_post_title/:
-      text: |
-        Post content here...
-      score: 0.9
-  threshold: 0.8
+  https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+    text: |
+      Post content here...
+    threshold: 0.8
 ```
 
 > So, where should I put the YAML configuration file?
@@ -62,20 +58,18 @@ You'll want to store it at `~/.config/reddit/config.yaml`. This location is pret
 
 > Can I mark multiple positive and negative examples for the same topic?
 
-Absolutely! Just add more entries under the `training` section in the YAML file for the same topic. Make sure to include the URL, text, and score for each example. It'll look something like this:
+Absolutely! Just add more entries in the YAML file for the same topic. Make sure to include the URL, text, and threshold for each example. It'll look something like this:
 
 ```
 example_topic:
-  training:
-    https://www.reddit.com/r/example/comments/123abc/some_post_title/:
-      text: |
-        Post content here...
-      score: 0.9
-    https://www.reddit.com/r/example/comments/456def/another_post_title/:
-      text: |
-        Another post content...
-      score: 0.2
-  threshold: 0.8
+  https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+    text: |
+      Post content here...
+    threshold: 0.9
+  https://www.reddit.com/r/example/comments/456def/another_post_title/:
+    text: |
+      Another post content...
+    threshold: 0.2
 ```
 
 The tool will use all these examples to train the model and find similar posts for you.
