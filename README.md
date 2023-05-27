@@ -74,8 +74,6 @@ example_topic:
     threshold: 0.2
 ```
 
-The tool will use all these examples to train the model and find similar posts for you.
-
 ## Sourcing Similar Posts
 
 > How does the tool find similar posts?
