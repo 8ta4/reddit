@@ -18,14 +18,13 @@ It uses fancy stuff like natural language processing and machine learning to und
 
 The tool comes as a Nix package, so you don't have to worry about dependencies. Just make sure you have Nix installed on your system. If you don't, you can download and install it from the [Nix download page](https://nixos.org/download.html).
 
-TODO: https://nixos.wiki/wiki/Flakes#Enable_flakes
+Before installing the tool, ensure that flakes support is enabled in your Nix setup. You can find instructions on how to enable flakes support at [Enable Flakes](https://nixos.wiki/wiki/Flakes#Enable_flakes).
 
-Once you've got Nix, just run this command in your terminal to install the Reddit tool:
+Once you've got Nix with flakes support, just run this command in your terminal to install the Reddit tool:
 
 ```bash
 nix profile install github:8ta4/reddit
 ```
-
 > Why use a Nix package?
 
 Nix packages are awesome because they take care of all dependencies for you, making installation a breeze. Plus, Nix offers atomic upgrades and rollbacks, so you can easily switch between different versions of the Reddit tool without any issues.
