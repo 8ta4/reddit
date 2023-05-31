@@ -20,8 +20,10 @@
 
   # https://devenv.sh/pre-commit-hooks/
   # pre-commit.hooks.shellcheck.enable = true;
-  pre-commit.hooks.nixpkgs-fmt.enable = true;
-  pre-commit.hooks.prettier.enable = true;
+  pre-commit.hooks = {
+    nixpkgs-fmt.enable = true;
+    prettier.enable = true;
+  };
 
   # https://devenv.sh/processes/
   # processes.ping.exec = "ping example.com";
