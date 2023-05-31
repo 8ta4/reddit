@@ -25,6 +25,7 @@ Once you've got Nix with flakes support, just run this command in your terminal 
 ```bash
 nix profile install github:8ta4/reddit
 ```
+
 > Why use a Nix package?
 
 Nix packages are awesome because they take care of all dependencies for you, making installation a breeze. Plus, Nix offers atomic upgrades and rollbacks, so you can easily switch between different versions of the Reddit tool without any issues.
