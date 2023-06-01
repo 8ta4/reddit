@@ -1,14 +1,21 @@
 module Main (main) where
 
-import Data.Aeson (Value)
 import Data.HashMap.Strict (HashMap)
 import Data.Text (Text)
-import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException)
+import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON)
+import GHC.Generics (Generic)
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 
-type Config = HashMap Text (HashMap Text Value)
+data UrlConfig = UrlConfig
+  { text :: Text
+  , threshold :: Double
+  } deriving (Show, Eq, Generic)
+
+instance FromJSON UrlConfig
+
+type Config = HashMap Text (HashMap Text UrlConfig)
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
