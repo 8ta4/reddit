@@ -8,7 +8,7 @@ import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 
-type Config = HashMap Text Value
+type Config = HashMap Text (HashMap Text Value)
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
