@@ -18,17 +18,14 @@ data UrlConfig = UrlConfig
 
 instance FromJSON UrlConfig
 
-instance FromJSON URI where
-  parseJSON = withText "URI" $ \t ->
-    case parseURI (unpack t) of
-      Just uri -> pure uri
-      Nothing  -> fail "Invalid URI"
-      
 parseUri :: Text -> Parser URI
 parseUri t = case parseURI (unpack t) of
   Just uri -> pure uri
   Nothing  -> fail "Invalid URI"
 
+instance FromJSON URI where
+  parseJSON = withText "URI" parseUri
+        
 instance FromJSONKey URI where
   fromJSONKey = FromJSONKeyTextParser parseUri
 
