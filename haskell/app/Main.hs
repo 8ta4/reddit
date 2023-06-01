@@ -1,7 +1,11 @@
 module Main (main) where
 
-import Lib
 import Prelude
+import System.Directory (getHomeDirectory)
+import System.FilePath ((</>))
 
 main :: IO ()
-main = someFunc
+main = do
+  homeDir <- getHomeDirectory
+  let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
+  putStrLn configFile

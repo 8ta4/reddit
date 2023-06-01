@@ -21,6 +21,8 @@ description: Please see the README on GitHub at <https://github.com/githubuser/h
 
 dependencies:
   - base == 4.18.0.0
+  - directory == 1.3.6.2
+  - filepath == 1.4.2.2
 
 ghc-options:
   - -Wall
