@@ -11,6 +11,7 @@ import Data.List (isSuffixOf, isPrefixOf, sortOn)
 import Data.Maybe (catMaybes, mapMaybe)
 import Data.Ord (Down (Down))
 import Data.Text (Text, unpack, splitOn, pack)
+import qualified Data.Text.IO as TIO
 import Data.Time.Clock (UTCTime)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
 import GHC.Generics (Generic)
@@ -77,8 +78,13 @@ getPostData :: Item -> Maybe (Text, UTCTime)
 getPostData p = do
   link <- getItemLink p
   pubDate <- join (getItemPublishDate p)
-  return (link <> ".rss", pubDate)
-
+  return (link, pubDate)
+  
+printPostURL :: Text -> IO ()
+printPostURL postURL = do
+  rssFeed <- fetchRedditRSS $ postURL <> ".rss"
+  TIO.putStrLn postURL
+  
 main :: IO ()
 main = do
   homeDir <- getHomeDirectory
@@ -98,3 +104,4 @@ main = do
       
       print m
       print postURLs
+      mapM_ printPostURL postURLs
