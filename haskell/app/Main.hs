@@ -23,7 +23,7 @@ instance FromJSON CommentConfig
 parseCommentURI :: Text -> Parser CommentURI
 parseCommentURI t = case parseURI (unpack t) of
   Just uri -> case uriAuthority uri of
-    Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth && "/r/" `isPrefixOf` uriPath uri && (splitOn "/" (pack (uriPath uri)) ^? ix 3) == Just "comments"
+    Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth && "/r/" `isPrefixOf` uriPath uri && splitOn "/" (pack (uriPath uri)) ^? ix 3 == Just "comments"
       then pure (CommentURI uri)
       else fail "Invalid URI: not a Reddit comment"
     Nothing -> fail "Invalid URI: no authority"
