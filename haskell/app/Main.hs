@@ -75,7 +75,7 @@ getPostData :: Item -> Maybe (Text, UTCTime)
 getPostData p = do
   link <- getItemLink p
   pubDate <- join (getItemPublishDate p)
-  return (link, pubDate)
+  return (link <> ".rss", pubDate)
 
 main :: IO ()
 main = do
