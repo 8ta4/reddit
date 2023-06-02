@@ -51,8 +51,8 @@ main = do
   homeDir <- getHomeDirectory
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
   putStrLn configFile
-  result <- parseConfigFile configFile
-  case result of
+  config <- parseConfigFile configFile
+  case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> do
       print (m :: Config)
