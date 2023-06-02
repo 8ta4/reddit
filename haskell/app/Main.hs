@@ -13,6 +13,10 @@ import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToStrin
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
+import Text.Feed.Types (Feed)
+import Network.HTTP.Client (responseBody)
+import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
+import Text.Feed.Import (parseFeedSource)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -54,6 +58,15 @@ getSubredditURL (CommentURI uri) = "https://www.reddit.com/r/" <> (splitOn "/" (
 
 getSubredditURLs :: Topic -> HashSet Text
 getSubredditURLs = fromList . map getSubredditURL . keys
+
+fetchRedditRSS :: Text -> IO (Maybe Feed)
+fetchRedditRSS subredditURL = do
+  request <- parseRequest $ unpack subredditURL
+  -- TODO: add user agent
+  let requestWithHeaders = setRequestHeaders [("User-Agent", "haskell:myApp:v1.0")] request
+  response <- httpLbs requestWithHeaders
+  let rssContent = responseBody response
+  return $ parseFeedSource rssContent
 
 main :: IO ()
 main = do
