@@ -34,7 +34,7 @@ newtype CommentURI = CommentURI URI
 
 instance FromJSON CommentURI where
   parseJSON = withText "URI" parseCommentURI
-        
+
 instance FromJSONKey CommentURI where
   fromJSONKey = FromJSONKeyTextParser parseCommentURI
 
