@@ -46,9 +46,7 @@ instance FromJSONKey CommentURI where
 instance Hashable CommentURI where
   hashWithSalt salt (CommentURI path) = hashWithSalt salt (uriToString id path "")
   
-type Topic = HashMap CommentURI CommentConfig
-
-type Config = HashMap Text Topic
+type Config = HashMap CommentURI CommentConfig
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
@@ -56,7 +54,7 @@ parseConfigFile = decodeFileEither
 getSubredditURL :: CommentURI -> Text
 getSubredditURL (CommentURI uri) = "https://www.reddit.com/r/" <> (splitOn "/" (pack $ uriPath uri) !! 2) <> "/.rss"
 
-getSubredditURLs :: Topic -> HashSet Text
+getSubredditURLs :: Config -> HashSet Text
 getSubredditURLs = fromList . map getSubredditURL . keys
 
 fetchRedditRSS :: Text -> IO (Maybe Feed)
