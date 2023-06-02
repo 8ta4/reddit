@@ -94,7 +94,7 @@ main = do
 
       let postData = mapMaybe getPostData posts
       let sortedData = sortOn (Down . snd) postData
-      let links = map fst sortedData
+      let postURLs = map fst sortedData
       
       print m
-      print links
+      print postURLs
