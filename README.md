@@ -37,41 +37,38 @@ Nix packages are awesome because they take care of all dependencies for you, mak
 You'll need to create or modify a YAML file to mark a post. The file should look like this:
 
 ```
-{{topic}}:
-  {{URL}}:
-    text: |
-      {{text}}
-    threshold: {{threshold}}
+{{URL}}:
+  text: |
+    {{text}}
+  threshold: {{threshold}}
 ```
 
-Replace `{{topic}}`, `{{URL}}`, `{{text}}`, and `{{threshold}}` with the right values for the post you want to mark. For example:
+Replace `{{URL}}`, `{{text}}`, and `{{threshold}}` with the right values for the post you want to mark. For example:
 
 ```
-example_topic:
-  https://www.reddit.com/r/example/comments/123abc/some_post_title/:
-    text: |
-      Post content here...
-    threshold: 0.8
+https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+  text: |
+    Post content here...
+  threshold: 0.8
 ```
 
 > So, where should I put the YAML configuration file?
 
 You'll want to store it at `~/.config/reddit/config.yaml`. This location is pretty standard for configuration files and will make it easy for you to find and manage.
 
-> Can I mark multiple examples for the same topic?
+> Can I mark multiple examples?
 
-Absolutely! Just add more entries in the YAML file for the same topic. Make sure to include the URL, text, and threshold for each example. It'll look something like this:
+Absolutely! Just add more entries in the YAML file. Make sure to include the URL, text, and threshold for each example. It'll look something like this:
 
 ```
-example_topic:
-  https://www.reddit.com/r/example/comments/123abc/some_post_title/:
-    text: |
-      Post content here...
-    threshold: 0.9
-  https://www.reddit.com/r/example/comments/456def/another_post_title/:
-    text: |
-      Another post content...
-    threshold: 0.2
+https://www.reddit.com/r/example/comments/123abc/some_post_title/:
+  text: |
+    Post content here...
+  threshold: 0.9
+https://www.reddit.com/r/example/comments/456def/another_post_title/:
+  text: |
+    Another post content...
+  threshold: 0.2
 ```
 
 ## Using the CLI Tool
