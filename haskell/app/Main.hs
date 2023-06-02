@@ -63,5 +63,4 @@ main = do
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> do
-      print (m :: Config)
+    Right m -> print m
