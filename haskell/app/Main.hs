@@ -49,11 +49,11 @@ type Config = HashMap Text Topic
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
 
-getSubredditName :: CommentURI -> Text
-getSubredditName (CommentURI uri) = splitOn "/" (pack $ uriPath uri) !! 2
+getSubredditURL :: CommentURI -> Text
+getSubredditURL (CommentURI uri) = "https://www.reddit.com/r/" <> (splitOn "/" (pack $ uriPath uri) !! 2) <> "/.rss"
 
-getSubreddits :: Topic -> HashSet Text
-getSubreddits = fromList . map getSubredditName . keys
+getSubredditURLs :: Topic -> HashSet Text
+getSubredditURLs = fromList . map getSubredditURL . keys
 
 main :: IO ()
 main = do
