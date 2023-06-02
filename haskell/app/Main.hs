@@ -24,9 +24,9 @@ parseComment t = case parseURI (unpack t) of
   Just uri -> case uriAuthority uri of
     Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth
       then pure (Comment uri)
-      else fail "Invalid URI"
-    Nothing -> fail "Invalid URI"
-  Nothing  -> fail "Invalid URI"
+      else fail "Invalid URI: not a Reddit domain"
+    Nothing -> fail "Invalid URI: no authority"
+  Nothing  -> fail "Invalid URI: could not parse URI"
 
 newtype Comment = Comment URI
   deriving (Show, Eq, Generic)
