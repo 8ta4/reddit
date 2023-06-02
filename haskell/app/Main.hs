@@ -18,6 +18,7 @@ import Network.HTTP.Client (responseBody)
 import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
 import Text.Feed.Import (parseFeedSource)
 import Data.Maybe (catMaybes)
+import Text.Feed.Query (getFeedItems)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -76,7 +77,7 @@ main = do
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> do
-      print m
       let subredditURLs = getSubredditURLs m
       rssFeeds <- catMaybes <$> mapM fetchRedditRSS (toList subredditURLs)
-      print subredditURLs
+      let posts = concatMap getFeedItems rssFeeds
+      print m
