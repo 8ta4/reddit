@@ -6,19 +6,19 @@ import Data.HashMap.Strict (HashMap, keys)
 import Data.HashSet (fromList, HashSet, toList)
 import Data.Hashable (Hashable(..))
 import Data.List (isSuffixOf, isPrefixOf)
+import Data.Maybe (catMaybes)
 import Data.Text (Text, unpack, splitOn, pack)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
 import GHC.Generics (Generic)
+import Network.HTTP.Client (responseBody)
+import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
 import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToString)
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
-import Text.Feed.Types (Feed)
-import Network.HTTP.Client (responseBody)
-import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
 import Text.Feed.Import (parseFeedSource)
-import Data.Maybe (catMaybes)
 import Text.Feed.Query (getFeedItems)
+import Text.Feed.Types (Feed)
 
 data CommentConfig = CommentConfig
   { text :: Text
