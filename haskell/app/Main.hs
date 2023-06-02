@@ -1,16 +1,16 @@
 module Main (main) where
 
+import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
 import Data.HashMap.Strict (HashMap)
+import Data.Hashable (Hashable(..))
+import Data.List (isSuffixOf)
 import Data.Text (Text, unpack)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
-import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
-import Data.Hashable (Hashable(..))
 import GHC.Generics (Generic)
 import Network.URI (URI, parseURI, uriAuthority, uriRegName, uriToString)
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
-import Data.List (isSuffixOf)
 
 data UrlConfig = UrlConfig
   { text :: Text
