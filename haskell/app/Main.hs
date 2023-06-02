@@ -1,13 +1,16 @@
 module Main (main) where
 
 import Control.Lens ((^?), ix)
+import Control.Monad (join)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
 import Data.HashMap.Strict (HashMap, keys)
 import Data.HashSet (fromList, HashSet, toList)
 import Data.Hashable (Hashable(..))
-import Data.List (isSuffixOf, isPrefixOf)
-import Data.Maybe (catMaybes)
+import Data.List (isSuffixOf, isPrefixOf, sortBy)
+import Data.Maybe (catMaybes, mapMaybe)
+import Data.Ord (comparing)
 import Data.Text (Text, unpack, splitOn, pack)
+import Data.Time.Clock (UTCTime)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
 import GHC.Generics (Generic)
 import Network.HTTP.Client (responseBody)
@@ -17,8 +20,8 @@ import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query (getFeedItems)
-import Text.Feed.Types (Feed)
+import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink)
+import Text.Feed.Types (Feed, Item)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -47,7 +50,7 @@ instance FromJSONKey CommentURI where
 
 instance Hashable CommentURI where
   hashWithSalt salt (CommentURI path) = hashWithSalt salt (uriToString id path "")
-  
+
 type Config = HashMap CommentURI CommentConfig
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
@@ -68,6 +71,12 @@ fetchRedditRSS subredditURL = do
   let rssContent = responseBody response
   return $ parseFeedSource rssContent
 
+getPostData :: Item -> Maybe (Text, UTCTime)
+getPostData p = do
+  link <- getItemLink p
+  pubDate <- join (getItemPublishDate p)
+  return (link, pubDate)
+
 main :: IO ()
 main = do
   homeDir <- getHomeDirectory
@@ -80,4 +89,10 @@ main = do
       let subredditURLs = getSubredditURLs m
       rssFeeds <- catMaybes <$> mapM fetchRedditRSS (toList subredditURLs)
       let posts = concatMap getFeedItems rssFeeds
+      
+      let postData = mapMaybe getPostData posts
+      let sortedData = sortBy (comparing snd) postData
+      let links = map fst sortedData
+      
       print m
+      print links
