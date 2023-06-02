@@ -46,12 +46,27 @@ type Config = HashMap Text (HashMap CommentURI CommentConfig)
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
 
+getSubredditName :: CommentURI -> Text
+getSubredditName (CommentURI uri) = splitOn "/" (pack $ uriPath uri) !! 2
+
+type SubredditSet = HashSet Text
+
+processTopic :: Text -> HashMap CommentURI CommentConfig -> SubredditSet
+processTopic _ = fromList . map getSubredditName . keys
+
+processConfig :: Config -> HashMap Text SubredditSet
+processConfig = mapWithKey processTopic
+
 main :: IO ()
 main = do
   homeDir <- getHomeDirectory
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
   putStrLn configFile
   config <- parseConfigFile configFile
+  let subredditSet = case config of
+        Left _ -> empty
+        Right m -> processConfig m
+  print subredditSet
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> do
