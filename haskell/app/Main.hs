@@ -3,7 +3,7 @@ module Main (main) where
 import Control.Lens ((^?), ix)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
 import Data.HashMap.Strict (HashMap, keys)
-import Data.HashSet (fromList, HashSet)
+import Data.HashSet (fromList, HashSet, toList)
 import Data.Hashable (Hashable(..))
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Text (Text, unpack, splitOn, pack)
@@ -77,4 +77,5 @@ main = do
     Right m -> do
       print m
       let subredditURLs = getSubredditURLs m
+      rssFeeds <- mapM fetchRedditRSS $ toList subredditURLs
       print subredditURLs
