@@ -2,8 +2,8 @@ module Main (main) where
 
 import Control.Lens ((^?), ix)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
-import Data.HashMap.Strict (HashMap, keys, mapWithKey, empty)
-import Data.HashSet (HashSet, fromList)
+import Data.HashMap.Strict (HashMap, keys)
+import Data.HashSet (fromList, HashSet)
 import Data.Hashable (Hashable(..))
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Text (Text, unpack, splitOn, pack)
@@ -13,6 +13,10 @@ import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToStrin
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
+import Text.Feed.Types (Feed)
+import Network.HTTP.Client (responseBody)
+import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
+import Text.Feed.Import (parseFeedSource)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -41,22 +45,28 @@ instance FromJSONKey CommentURI where
 
 instance Hashable CommentURI where
   hashWithSalt salt (CommentURI path) = hashWithSalt salt (uriToString id path "")
+  
+type Topic = HashMap CommentURI CommentConfig
 
-type Config = HashMap Text (HashMap CommentURI CommentConfig)
+type Config = HashMap Text Topic
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
 
-getSubredditName :: CommentURI -> Text
-getSubredditName (CommentURI uri) = splitOn "/" (pack $ uriPath uri) !! 2
+getSubredditURL :: CommentURI -> Text
+getSubredditURL (CommentURI uri) = "https://www.reddit.com/r/" <> (splitOn "/" (pack $ uriPath uri) !! 2) <> "/.rss"
 
-type SubredditSet = HashSet Text
+getSubredditURLs :: Topic -> HashSet Text
+getSubredditURLs = fromList . map getSubredditURL . keys
 
-processTopic :: Text -> HashMap CommentURI CommentConfig -> SubredditSet
-processTopic _ = fromList . map getSubredditName . keys
-
-processConfig :: Config -> HashMap Text SubredditSet
-processConfig = mapWithKey processTopic
+fetchRedditRSS :: Text -> IO (Maybe Feed)
+fetchRedditRSS subredditURL = do
+  request <- parseRequest $ unpack subredditURL
+  -- TODO: add user agent
+  let requestWithHeaders = setRequestHeaders [("User-Agent", "haskell:myApp:v1.0")] request
+  response <- httpLbs requestWithHeaders
+  let rssContent = responseBody response
+  return $ parseFeedSource rssContent
 
 main :: IO ()
 main = do
@@ -64,11 +74,6 @@ main = do
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
   putStrLn configFile
   config <- parseConfigFile configFile
-  let subredditSet = case config of
-        Left _ -> empty
-        Right m -> processConfig m
-  print subredditSet
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> do
-      print (m :: Config)
+    Right m -> print m
