@@ -17,6 +17,7 @@ import Text.Feed.Types (Feed)
 import Network.HTTP.Client (responseBody)
 import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
 import Text.Feed.Import (parseFeedSource)
+import Data.Maybe (catMaybes)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -77,5 +78,5 @@ main = do
     Right m -> do
       print m
       let subredditURLs = getSubredditURLs m
-      rssFeeds <- mapM fetchRedditRSS $ toList subredditURLs
+      rssFeeds <- catMaybes <$> mapM fetchRedditRSS (toList subredditURLs)
       print subredditURLs
