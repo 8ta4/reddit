@@ -6,9 +6,9 @@ import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
 import Data.HashMap.Strict (HashMap, keys)
 import Data.HashSet (fromList, HashSet, toList)
 import Data.Hashable (Hashable(..))
-import Data.List (isSuffixOf, isPrefixOf, sortBy)
+import Data.List (isSuffixOf, isPrefixOf)
 import Data.Maybe (catMaybes, mapMaybe)
-import Data.Ord (comparing)
+import Data.Ord (Down (Down))
 import Data.Text (Text, unpack, splitOn, pack)
 import Data.Time.Clock (UTCTime)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
@@ -22,6 +22,7 @@ import System.FilePath ((</>))
 import Text.Feed.Import (parseFeedSource)
 import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink)
 import Text.Feed.Types (Feed, Item)
+import GHC.OldList (sortOn)
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -89,9 +90,9 @@ main = do
       let subredditURLs = getSubredditURLs m
       rssFeeds <- catMaybes <$> mapM fetchRedditRSS (toList subredditURLs)
       let posts = concatMap getFeedItems rssFeeds
-      
+
       let postData = mapMaybe getPostData posts
-      let sortedData = sortBy (comparing snd) postData
+      let sortedData = sortOn (Down . snd) postData
       let links = map fst sortedData
       
       print m
