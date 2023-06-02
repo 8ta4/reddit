@@ -74,4 +74,7 @@ main = do
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> print m
+    Right m -> do
+      print m
+      let subredditURLs = getSubredditURLs m
+      print subredditURLs
