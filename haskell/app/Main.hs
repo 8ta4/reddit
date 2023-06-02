@@ -1,5 +1,6 @@
 module Main (main) where
 
+import Control.Concurrent (threadDelay)
 import Control.Lens ((^?), ix)
 import Control.Monad (join)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
@@ -69,6 +70,7 @@ fetchRedditRSS subredditURL = do
   let requestWithHeaders = setRequestHeaders [("User-Agent", "haskell:myApp:v1.0")] request
   response <- httpLbs requestWithHeaders
   let rssContent = responseBody response
+  threadDelay 1000000 -- pause for 1 second
   return $ parseFeedSource rssContent
 
 getPostData :: Item -> Maybe (Text, UTCTime)
