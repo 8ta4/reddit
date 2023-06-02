@@ -10,7 +10,7 @@ The main motivation for this is that when I see old social media comments about 
 
 > How does it work?
 
-It uses fancy stuff like natural language processing and machine learning to understand Reddit posts and how they relate to your product. You can mark posts as positive or negative examples to teach the tool what you're looking for. The tool will then score the posts based on their similarity to your examples and notify you when there's a match.
+It uses fancy stuff like natural language processing and machine learning to understand Reddit posts and how they relate to your product. You can mark posts as examples to teach the tool what you're looking for. The tool will then score the posts based on their similarity to your examples and notify you when there's a match.
 
 ## Installation
 
@@ -30,9 +30,9 @@ nix profile install github:8ta4/reddit
 
 Nix packages are awesome because they take care of all dependencies for you, making installation a breeze. Plus, Nix offers atomic upgrades and rollbacks, so you can easily switch between different versions of the Reddit tool without any issues.
 
-## Marking Positive and Negative Examples
+## Marking Examples
 
-> How do I mark a Reddit post as a positive or negative example?
+> How do I mark a Reddit post as an example?
 
 You'll need to create or modify a YAML file to mark a post. The file should look like this:
 
@@ -58,7 +58,7 @@ example_topic:
 
 You'll want to store it at `~/.config/reddit/config.yaml`. This location is pretty standard for configuration files and will make it easy for you to find and manage.
 
-> Can I mark multiple positive and negative examples for the same topic?
+> Can I mark multiple examples for the same topic?
 
 Absolutely! Just add more entries in the YAML file for the same topic. Make sure to include the URL, text, and threshold for each example. It'll look something like this:
 
@@ -78,21 +78,10 @@ example_topic:
 
 > How does the tool find similar posts?
 
-It uses cosine similarity to compare the text of the positive examples with the text of the new posts.
+It uses cosine similarity to compare the text of the examples with the text of the new posts.
 
 ## Real-time Notifications
 
 > How will the tool notify me of similar posts?
 
-In the MVP, the tool won't send real-time notifications like email or in-app notifications. Instead, it'll add similar posts to a file. You can set up your own watch tools to keep an eye on this file and notify you when there are changes. That way, you can customize your notifications and still stay in the loop.
-
-> Hey, so where does the tool create that file with all the similar posts?
-
-It'll automatically generate the file at `~/.local/share/reddit/posts.txt`.
-
-> How can I set up a watch tool to keep an eye on the file?
-
-1. Pick a file watch tool that works for you, like [fswatch](https://emcrisostomo.github.io/fswatch/) for macOS or [inotify-tools](https://github.com/inotify-tools/inotify-tools/wiki) for Linux.
-2. Install your chosen file watch tool, following its documentation.
-3. Configure the tool to monitor the file where similar posts are added.
-4. Set up a notification method within the watch tool, like sending an email or showing a desktop notification when the file changes.
+In the MVP, the tool won't send real-time notifications like email or in-app notifications. Instead, it'll write similar posts to `stdout`. You can set up your own watch tools to keep an eye on the output and notify you when there are changes. That way, you can customize your notifications and still stay in the loop.
