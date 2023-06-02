@@ -2,8 +2,8 @@ module Main (main) where
 
 import Control.Lens ((^?), ix)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
-import Data.HashMap.Strict (HashMap, keys, mapWithKey, empty)
-import Data.HashSet (HashSet, fromList)
+import Data.HashMap.Strict (HashMap, keys)
+import Data.HashSet (fromList, HashSet)
 import Data.Hashable (Hashable(..))
 import Data.List (isSuffixOf, isPrefixOf)
 import Data.Text (Text, unpack, splitOn, pack)
@@ -41,8 +41,10 @@ instance FromJSONKey CommentURI where
 
 instance Hashable CommentURI where
   hashWithSalt salt (CommentURI path) = hashWithSalt salt (uriToString id path "")
+  
+type Topic = HashMap CommentURI CommentConfig
 
-type Config = HashMap Text (HashMap CommentURI CommentConfig)
+type Config = HashMap Text Topic
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
@@ -50,13 +52,8 @@ parseConfigFile = decodeFileEither
 getSubredditName :: CommentURI -> Text
 getSubredditName (CommentURI uri) = splitOn "/" (pack $ uriPath uri) !! 2
 
-type SubredditSet = HashSet Text
-
-processTopic :: Text -> HashMap CommentURI CommentConfig -> SubredditSet
-processTopic _ = fromList . map getSubredditName . keys
-
-processConfig :: Config -> HashMap Text SubredditSet
-processConfig = mapWithKey processTopic
+getSubreddits :: Topic -> HashSet Text
+getSubreddits = fromList . map getSubredditName . keys
 
 main :: IO ()
 main = do
@@ -64,10 +61,6 @@ main = do
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
   putStrLn configFile
   config <- parseConfigFile configFile
-  let subredditSet = case config of
-        Left _ -> empty
-        Right m -> processConfig m
-  print subredditSet
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> do
