@@ -18,21 +18,24 @@ data UrlConfig = UrlConfig
 
 instance FromJSON UrlConfig
 
-parseUri :: Text -> Parser URI
-parseUri t = case parseURI (unpack t) of
-  Just uri -> pure uri
+parseComment :: Text -> Parser Comment
+parseComment t = case parseURI (unpack t) of
+  Just uri -> pure (Comment uri)
   Nothing  -> fail "Invalid URI"
+  
+newtype Comment = Comment URI
+  deriving (Show, Eq, Generic)
 
-instance FromJSON URI where
-  parseJSON = withText "URI" parseUri
+instance FromJSON Comment where
+  parseJSON = withText "URI" parseComment
         
-instance FromJSONKey URI where
-  fromJSONKey = FromJSONKeyTextParser parseUri
+instance FromJSONKey Comment where
+  fromJSONKey = FromJSONKeyTextParser parseComment
 
-instance Hashable URI where
-  hashWithSalt salt uri = hashWithSalt salt (uriToString id uri "")
+instance Hashable Comment where
+  hashWithSalt salt (Comment path) = hashWithSalt salt (uriToString id path "")
 
-type Config = HashMap Text (HashMap URI UrlConfig)
+type Config = HashMap Text (HashMap Comment UrlConfig)
 
 parseConfigFile :: FilePath -> IO (Either ParseException Config)
 parseConfigFile = decodeFileEither
