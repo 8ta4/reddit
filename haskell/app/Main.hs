@@ -3,11 +3,11 @@ module Main (main) where
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
 import Data.HashMap.Strict (HashMap)
 import Data.Hashable (Hashable(..))
-import Data.List (isSuffixOf)
+import Data.List (isSuffixOf, isPrefixOf)
 import Data.Text (Text, unpack)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
 import GHC.Generics (Generic)
-import Network.URI (URI, parseURI, uriAuthority, uriRegName, uriToString)
+import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToString)
 import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
@@ -22,9 +22,9 @@ instance FromJSON UrlConfig
 parseComment :: Text -> Parser Comment
 parseComment t = case parseURI (unpack t) of
   Just uri -> case uriAuthority uri of
-    Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth
+    Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth && "/r/" `isPrefixOf` uriPath uri
       then pure (Comment uri)
-      else fail "Invalid URI: not a Reddit domain"
+      else fail "Invalid URI: not a Reddit comment"
     Nothing -> fail "Invalid URI: no authority"
   Nothing  -> fail "Invalid URI: could not parse URI"
 
