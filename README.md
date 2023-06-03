@@ -75,13 +75,11 @@ https://www.reddit.com/r/example/comments/456def/another_post_title/:
 
 > So, how do I actually use this tool to find matching posts?
 
-Just run the `reddit` command with the `-t` flag, followed by the time range you're interested in, in hours. Like, if you want to check for posts from the past day, you'd run:
+Just run the `reddit` command.
 
 ```
-$ reddit -t 24
+$ reddit
 ```
-
-The tool will do its magic, searching for new posts in that time range and giving you the URLs of any matches it finds.
 
 > What if I want to see the similarity scores for a specific post?
 
