@@ -21,7 +21,7 @@ import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink, getItemContent)
+import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink, getItemContent, getItemTitle)
 import Text.Feed.Types (Feed, Item)
 import qualified Data.Text.IO as TIO
 
@@ -88,8 +88,9 @@ printPostURL postURL = do
     Just feed -> do
       case getFeedItems feed of
         [] -> print $ "Error: no items in RSS feed for " <> postURL
-        (p:_) -> print $ getItemContent p
-  TIO.putStrLn postURL
+        (p:_) -> case getItemTitle p <> Just "\n" <> getItemContent p of
+          Nothing -> print $ "Error: could not get title or content for " <> postURL
+          Just _ -> TIO.putStrLn postURL
   
 main :: IO ()
 main = do
