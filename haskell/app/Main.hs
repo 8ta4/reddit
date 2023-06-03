@@ -4,6 +4,7 @@ import Control.Concurrent (threadDelay)
 import Control.Lens ((^?), ix)
 import Control.Monad (join)
 import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
+import Data.Foldable (traverse_)
 import Data.HashMap.Strict (HashMap, keys)
 import Data.HashSet (fromList, HashSet, toList)
 import Data.Hashable (Hashable(..))
@@ -102,7 +103,7 @@ main = do
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> do
       let subredditURLs = getSubredditURLs m
-      rssFeeds <- catMaybes <$> mapM fetchRedditRSS (toList subredditURLs)
+      rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
       let posts = concatMap getFeedItems rssFeeds
 
       let postData = mapMaybe getPostData posts
@@ -111,4 +112,4 @@ main = do
       
       print m
       print postURLs
-      mapM_ printPostURL postURLs
+      traverse_ printPostURL postURLs
