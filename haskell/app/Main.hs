@@ -11,7 +11,6 @@ import Data.List (isSuffixOf, isPrefixOf, sortOn)
 import Data.Maybe (catMaybes, mapMaybe)
 import Data.Ord (Down (Down))
 import Data.Text (Text, unpack, splitOn, pack)
-import qualified Data.Text.IO as TIO
 import Data.Time.Clock (UTCTime)
 import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
 import GHC.Generics (Generic)
@@ -22,8 +21,9 @@ import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink)
+import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink, getItemContent)
 import Text.Feed.Types (Feed, Item)
+import qualified Data.Text.IO as TIO
 
 data CommentConfig = CommentConfig
   { text :: Text
@@ -83,6 +83,12 @@ getPostData p = do
 printPostURL :: Text -> IO ()
 printPostURL postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
+  case rssFeed of
+    Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
+    Just feed -> do
+      case getFeedItems feed of
+        [] -> print $ "Error: no items in RSS feed for " <> postURL
+        (p:_) -> print $ getItemContent p
   TIO.putStrLn postURL
   
 main :: IO ()
