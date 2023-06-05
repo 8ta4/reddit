@@ -6,6 +6,9 @@
   :run-x {:ns-default clojure.clojure
           :exec-fn greet
           :exec-args {:name "Clojure"}}
+  ; https://github.com/clj-python/libpython-clj/blob/6e7368b44aaabddf565a5bbf3a240e60bf3dcbf8/deps.edn#L10-L12
+  :jdk-17 {:jvm-opts ["--add-modules" "jdk.incubator.foreign"
+                      "--enable-native-access=ALL-UNNAMED"]}
   :build {:deps {io.github.clojure/tools.build
                  {:git/tag "v0.9.2" :git/sha "fe6b140"}}
           :ns-default build}

@@ -1,5 +1,8 @@
 (ns clojure.clojure
-  (:gen-class))
+  (:gen-class)
+  (:require [libpython-clj2.python :as py]))
+
+(py/initialize! :python-executable "../.venv/bin/python")
 
 (defn greet
   "Callable entry point to the application."
