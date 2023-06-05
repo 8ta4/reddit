@@ -1,1 +1,1 @@
-# haskell
+# hs
