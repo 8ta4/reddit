@@ -69,7 +69,7 @@ fetchRedditRSS :: Text -> IO (Maybe Feed)
 fetchRedditRSS subredditURL = do
   request <- parseRequest $ unpack subredditURL
   -- TODO: add user agent
-  let requestWithHeaders = setRequestHeaders [("User-Agent", "haskell:myApp:v1.0")] request
+  let requestWithHeaders = setRequestHeaders [("User-Agent", "hs:myApp:v1.0")] request
   response <- httpLbs requestWithHeaders
   let rssContent = responseBody response
   threadDelay 1000000 -- pause for 1 second

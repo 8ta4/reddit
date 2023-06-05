@@ -4,11 +4,11 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           haskell
+name:           hs
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/githubuser/haskell#readme>
-homepage:       https://github.com/githubuser/haskell#readme
-bug-reports:    https://github.com/githubuser/haskell/issues
+description:    Please see the README on GitHub at <https://github.com/githubuser/hs#readme>
+homepage:       https://github.com/githubuser/hs#readme
+bug-reports:    https://github.com/githubuser/hs/issues
 author:         Author name here
 maintainer:     example@example.com
 copyright:      2023 Author name here
@@ -21,13 +21,13 @@ extra-source-files:
 
 source-repository head
   type: git
-  location: https://github.com/githubuser/haskell
+  location: https://github.com/githubuser/hs
 
 library
   exposed-modules:
       Lib
   other-modules:
-      Paths_haskell
+      Paths_hs
   hs-source-dirs:
       src
   default-extensions:
@@ -79,10 +79,10 @@ library
     , yaml ==0.11.11.0
   default-language: Haskell2010
 
-executable haskell-exe
+executable hs-exe
   main-is: Main.hs
   other-modules:
-      Paths_haskell
+      Paths_hs
   hs-source-dirs:
       app
   default-extensions:
@@ -124,7 +124,7 @@ executable haskell-exe
     , feed ==1.3.2.1
     , filepath ==1.4.2.2
     , hashable ==1.4.2.0
-    , haskell
+    , hs
     , http-client ==0.7.13.1
     , http-conduit ==2.3.8
     , lens ==5.1.1
@@ -135,11 +135,11 @@ executable haskell-exe
     , yaml ==0.11.11.0
   default-language: Haskell2010
 
-test-suite haskell-test
+test-suite hs-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_haskell
+      Paths_hs
   hs-source-dirs:
       test
   default-extensions:
@@ -181,7 +181,7 @@ test-suite haskell-test
     , feed ==1.3.2.1
     , filepath ==1.4.2.2
     , hashable ==1.4.2.0
-    , haskell
+    , hs
     , http-client ==0.7.13.1
     , http-conduit ==2.3.8
     , lens ==5.1.1

@@ -1,4 +1,4 @@
-# Changelog for `haskell`
+# Changelog for `hs`
 
 All notable changes to this project will be documented in this file.
 
