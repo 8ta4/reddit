@@ -6,6 +6,9 @@
 
 (py/from-import sentence_transformers SentenceTransformer util)
 
+(def model
+  (SentenceTransformer "paraphrase-MiniLM-L6-v2" :cache_folder "models"))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
