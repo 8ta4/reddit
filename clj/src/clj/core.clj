@@ -16,20 +16,19 @@
 (def model
   (SentenceTransformer "all-mpnet-base-v2" :cache_folder "models"))
 
-(defn get-scores
-  [examples query]
-  (let [embeddings (py/$a model encode examples :convert_to_tensor true)
+(defn calculate-score
+  [example query]
+  (let [embeddings (py/$a model encode [example] :convert_to_tensor true)
         query-embeddings (py/$a model encode [query] :convert_to_tensor true)
         scores (py/$a util cos_sim query-embeddings embeddings)]
-    (vec (first (py/$a scores tolist)))))
+    (ffirst (py/$a scores tolist))))
 
 (defn api-handler [request]
-  (let [examples (get-in request [:body :examples])
+  (let [example (get-in request [:body :example])
         query (get-in request [:body :query])]
-    (println (get-scores examples query))
-    (if (and examples query)
-      (response/response (json/generate-string {:scores (get-scores examples query)}))
-      (response/bad-request "Missing 'examples' and/or 'query' parameters."))))
+    (if (and example query)
+      (response/response (json/generate-string (calculate-score example query)))
+      (response/bad-request "Missing 'example' and/or 'query' parameters."))))
 
 (defroutes app-routes
   (POST "/" [] api-handler)
