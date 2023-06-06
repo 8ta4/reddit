@@ -1,46 +1,48 @@
 module Main (main) where
 
 import Control.Concurrent (threadDelay)
-import Control.Lens ((^?), ix)
+import Control.Lens (ix, (^?))
 import Control.Monad (join)
-import Data.Aeson.Types (FromJSONKey(..), FromJSONKeyFunction(..), Parser)
+import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser)
 import Data.Foldable (traverse_)
 import Data.HashMap.Strict (HashMap, keys)
-import Data.HashSet (fromList, HashSet, toList)
-import Data.Hashable (Hashable(..))
-import Data.List (isSuffixOf, isPrefixOf, sortOn)
+import Data.HashSet (HashSet, fromList, toList)
+import Data.Hashable (Hashable (..))
+import Data.List (isPrefixOf, isSuffixOf, sortOn)
 import Data.Maybe (catMaybes, mapMaybe)
 import Data.Ord (Down (Down))
-import Data.Text (Text, unpack, splitOn, pack)
+import Data.Text (Text, pack, splitOn, unpack)
+import Data.Text.IO qualified as TIO
 import Data.Time.Clock (UTCTime)
-import Data.Yaml (decodeFileEither, ParseException, prettyPrintParseException, FromJSON(..), withText)
+import Data.Yaml (FromJSON (..), ParseException, decodeFileEither, prettyPrintParseException, withText)
 import GHC.Generics (Generic)
 import Network.HTTP.Client (responseBody)
 import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
 import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToString)
-import Prelude
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
 import Text.Feed.Import (parseFeedSource)
-import Text.Feed.Query (getFeedItems, getItemPublishDate, getItemLink, getItemContent, getItemTitle)
+import Text.Feed.Query (getFeedItems, getItemContent, getItemLink, getItemPublishDate, getItemTitle)
 import Text.Feed.Types (Feed, Item)
-import qualified Data.Text.IO as TIO
+import Prelude
 
 data CommentConfig = CommentConfig
-  { text :: Text
-  , threshold :: Double
-  } deriving (Show, Eq, Generic)
+  { text :: Text,
+    threshold :: Double
+  }
+  deriving (Show, Eq, Generic)
 
 instance FromJSON CommentConfig
 
 parseCommentURI :: Text -> Parser CommentURI
 parseCommentURI t = case parseURI (unpack t) of
   Just uri -> case uriAuthority uri of
-    Just auth -> if "reddit.com" `isSuffixOf` uriRegName auth && "/r/" `isPrefixOf` uriPath uri && (splitOn "/" (pack (uriPath uri)) ^? ix 3) == Just "comments"
-      then pure (CommentURI uri)
-      else fail "Invalid URI: not a Reddit comment"
+    Just auth ->
+      if "reddit.com" `isSuffixOf` uriRegName auth && "/r/" `isPrefixOf` uriPath uri && (splitOn "/" (pack (uriPath uri)) ^? ix 3) == Just "comments"
+        then pure (CommentURI uri)
+        else fail "Invalid URI: not a Reddit comment"
     Nothing -> fail "Invalid URI: no authority"
-  Nothing  -> fail "Invalid URI: could not parse URI"
+  Nothing -> fail "Invalid URI: could not parse URI"
 
 newtype CommentURI = CommentURI URI
   deriving (Show, Eq, Generic)
@@ -89,7 +91,7 @@ printPostURL postURL = do
     Just feed -> do
       case getFeedItems feed of
         [] -> print $ "Error: no items in RSS feed for " <> postURL
-        (p:_) -> case getItemTitle p <> Just "\n" <> getItemContent p of
+        (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
           Nothing -> print $ "Error: could not get title or content for " <> postURL
           Just _ -> TIO.putStrLn postURL
 
