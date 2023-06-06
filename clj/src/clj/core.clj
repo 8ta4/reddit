@@ -32,7 +32,7 @@
       (response/bad-request "Missing 'examples' and/or 'query' parameters."))))
 
 (defroutes app-routes
-  (POST "/api" [] api-handler)
+  (POST "/" [] api-handler)
   (route/not-found "Not Found"))
 
 (def app
