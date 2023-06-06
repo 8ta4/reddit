@@ -16,7 +16,7 @@
   (let [embeddings (py/$a model encode examples :convert_to_tensor true)
         query-embeddings (py/$a model encode [query] :convert_to_tensor true)
         scores (py/$a util cos_sim query-embeddings embeddings)]
-    (py/$a scores tolist)))
+    (first (py/$a scores tolist))))
 
 (defn -main
   "I don't do a whole lot ... yet."
