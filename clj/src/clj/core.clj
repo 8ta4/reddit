@@ -14,7 +14,7 @@
 (py/from-import sentence_transformers SentenceTransformer util)
 
 (def model
-  (SentenceTransformer "paraphrase-MiniLM-L6-v2" :cache_folder "models"))
+  (SentenceTransformer "all-mpnet-base-v2" :cache_folder "models"))
 
 (defn get-scores
   [examples query]
