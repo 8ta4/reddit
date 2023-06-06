@@ -22,6 +22,6 @@ jobs:
         shell: sh
       - run: devenv ci
       - run: devenv shell echo ok
-      - name: Build Stack application
-        run: stack build
+      - name: Test Stack application
+        run: stack test
         working-directory: ./hs
