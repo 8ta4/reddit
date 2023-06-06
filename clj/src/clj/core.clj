@@ -4,6 +4,18 @@
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
+(py/from-import sentence_transformers SentenceTransformer util)
+
+(def model
+  (SentenceTransformer "paraphrase-MiniLM-L6-v2" :cache_folder "models"))
+
+(defn get-scores
+  [examples query]
+  (let [embeddings (py/$a model encode examples :convert_to_tensor true)
+        query-embeddings (py/$a model encode [query] :convert_to_tensor true)
+        scores (py/$a util cos_sim query-embeddings embeddings)]
+    (first (py/$a scores tolist))))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
