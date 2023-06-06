@@ -4,6 +4,8 @@
 
 (py/initialize! :python-executable "../.venv/bin/python")
 
+(py/from-import sentence_transformers SentenceTransformer util)
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
