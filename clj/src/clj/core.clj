@@ -9,8 +9,6 @@
 (def model
   (SentenceTransformer "paraphrase-MiniLM-L6-v2" :cache_folder "models"))
 
-(py/$a model encode ["Hello world!"] :convert_to_tensor true)
-
 (defn get-scores
   [examples query]
   (let [embeddings (py/$a model encode examples :convert_to_tensor true)
