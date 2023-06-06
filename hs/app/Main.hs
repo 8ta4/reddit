@@ -83,8 +83,8 @@ getPostData p = do
   pubDate <- join (getItemPublishDate p)
   return (link, pubDate)
 
-printPostURL :: Text -> IO ()
-printPostURL postURL = do
+printPostURL :: Config -> Text -> IO ()
+printPostURL _ postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
   case rssFeed of
     Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
@@ -113,5 +113,4 @@ main = do
       let postURLs = map fst sortedData
 
       print m
-      print postURLs
-      traverse_ printPostURL postURLs
+      traverse_ (printPostURL m) postURLs
