@@ -80,7 +80,7 @@ getPostData p = do
   link <- getItemLink p
   pubDate <- join (getItemPublishDate p)
   return (link, pubDate)
-  
+
 printPostURL :: Text -> IO ()
 printPostURL postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
@@ -92,7 +92,7 @@ printPostURL postURL = do
         (p:_) -> case getItemTitle p <> Just "\n" <> getItemContent p of
           Nothing -> print $ "Error: could not get title or content for " <> postURL
           Just _ -> TIO.putStrLn postURL
-  
+
 main :: IO ()
 main = do
   homeDir <- getHomeDirectory
@@ -109,7 +109,7 @@ main = do
       let postData = mapMaybe getPostData posts
       let sortedData = sortOn (Down . snd) postData
       let postURLs = map fst sortedData
-      
+
       print m
       print postURLs
       traverse_ printPostURL postURLs
