@@ -25,3 +25,6 @@ jobs:
       - name: Test Stack application
         run: stack test
         working-directory: ./hs
+      - name: Test Leiningen application
+        run: lein test
+        working-directory: ./clj
