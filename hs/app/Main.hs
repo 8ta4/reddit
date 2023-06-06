@@ -3,7 +3,7 @@ module Main (main) where
 import Control.Concurrent (threadDelay)
 import Control.Lens (ix, (^?))
 import Control.Monad (join)
-import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser)
+import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser, ToJSON)
 import Data.Foldable (traverse_)
 import Data.HashMap.Strict (HashMap, keys)
 import Data.HashSet (HashSet, fromList, toList)
@@ -17,7 +17,7 @@ import Data.Time.Clock (UTCTime)
 import Data.Yaml (FromJSON (..), ParseException, decodeFileEither, prettyPrintParseException, withText)
 import GHC.Generics (Generic)
 import Network.HTTP.Client (responseBody)
-import Network.HTTP.Simple (httpLbs, parseRequest, setRequestHeaders)
+import Network.HTTP.Simple (getResponseBody, httpJSON, httpLbs, parseRequest, setRequestBodyJSON, setRequestHeaders, setRequestMethod, setRequestPath)
 import Network.URI (URI, parseURI, uriAuthority, uriPath, uriRegName, uriToString)
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
@@ -82,6 +82,26 @@ getPostData p = do
   link <- getItemLink p
   pubDate <- join (getItemPublishDate p)
   return (link, pubDate)
+
+data SimilarityRequest = SimilarityRequest
+  { example :: Text,
+    query :: Text
+  }
+  deriving (Show, Eq, Generic)
+
+instance ToJSON SimilarityRequest
+
+getSimilarityScore :: Text -> Text -> IO Double
+getSimilarityScore concatenatedText text = do
+  initialRequest <- parseRequest "http://localhost:8080"
+  let request =
+        setRequestMethod "POST"
+          . setRequestPath "/"
+          . setRequestBodyJSON (SimilarityRequest concatenatedText text)
+          $ initialRequest
+  response <- httpJSON request
+  let score = getResponseBody response :: Double
+  return score
 
 printPostURL :: Config -> Text -> IO ()
 printPostURL _ postURL = do
