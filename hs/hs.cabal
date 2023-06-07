@@ -82,6 +82,7 @@ library
 executable hs-exe
   main-is: Main.hs
   other-modules:
+      Reddit
       Paths_hs
   hs-source-dirs:
       app
