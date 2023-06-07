@@ -73,6 +73,7 @@ library
     , http-conduit ==2.3.8
     , lens ==5.1.1
     , network-uri ==2.6.4.2
+    , optparse-applicative ==0.17.1.0
     , text ==1.2.5.0
     , time ==1.11.1.1
     , unordered-containers ==0.2.19.1
@@ -82,6 +83,7 @@ library
 executable hs-exe
   main-is: Main.hs
   other-modules:
+      Reddit
       Paths_hs
   hs-source-dirs:
       app
@@ -129,6 +131,7 @@ executable hs-exe
     , http-conduit ==2.3.8
     , lens ==5.1.1
     , network-uri ==2.6.4.2
+    , optparse-applicative ==0.17.1.0
     , text ==1.2.5.0
     , time ==1.11.1.1
     , unordered-containers ==0.2.19.1
@@ -186,6 +189,7 @@ test-suite hs-test
     , http-conduit ==2.3.8
     , lens ==5.1.1
     , network-uri ==2.6.4.2
+    , optparse-applicative ==0.17.1.0
     , text ==1.2.5.0
     , time ==1.11.1.1
     , unordered-containers ==0.2.19.1
