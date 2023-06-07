@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "3.10.11"
 sentence-transformers = "2.2.2"
+# TODO: update torch
+torch = "1.13.1"
 
 
 [build-system]

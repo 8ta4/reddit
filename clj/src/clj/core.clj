@@ -1,13 +1,13 @@
 (ns clj.core
   (:gen-class)
-  (:require [libpython-clj2.python :as py]
-            [ring.adapter.jetty :as jetty]
+  (:require [cheshire.core :as json]
             [compojure.core :refer [defroutes POST]]
             [compojure.route :as route]
-            [ring.middleware.params :refer [wrap-params]]
+            [libpython-clj2.python :as py]
+            [ring.adapter.jetty :as jetty]
             [ring.middleware.json :refer [wrap-json-body wrap-json-response]]
-            [ring.util.response :as response]
-            [cheshire.core :as json]))
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.util.response :as response]))
 
 (py/initialize! :python-executable "../.venv/bin/python")
 

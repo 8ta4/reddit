@@ -2,11 +2,11 @@ module Main (main) where
 
 import Control.Concurrent (threadDelay)
 import Control.Lens (ix, (^?))
-import Control.Monad (join)
+import Control.Monad (join, when)
 import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser, ToJSON)
-import Data.Foldable (traverse_)
-import Data.HashMap.Strict (HashMap, keys)
-import Data.HashSet (HashSet, fromList, toList)
+import Data.Foldable (toList, traverse_)
+import Data.HashMap.Strict (HashMap, elems, keys)
+import Data.HashSet (HashSet, fromList)
 import Data.Hashable (Hashable (..))
 import Data.List (isPrefixOf, isSuffixOf, sortOn)
 import Data.Maybe (catMaybes, mapMaybe)
@@ -103,8 +103,19 @@ getSimilarityScore concatenatedText text = do
   let score = getResponseBody response :: Double
   return score
 
+checkSimilarityScores :: Config -> Text -> IO Bool
+checkSimilarityScores config concatenatedText = do
+  let checkScore commentConfig = do
+        similarityScore <- getSimilarityScore concatenatedText (text commentConfig)
+        print similarityScore
+        print $ threshold commentConfig
+        return $ similarityScore >= threshold commentConfig
+
+  results <- mapM checkScore (elems config)
+  return $ or results
+
 printPostURL :: Config -> Text -> IO ()
-printPostURL _ postURL = do
+printPostURL config postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
   case rssFeed of
     Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
@@ -113,7 +124,9 @@ printPostURL _ postURL = do
         [] -> print $ "Error: no items in RSS feed for " <> postURL
         (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
           Nothing -> print $ "Error: could not get title or content for " <> postURL
-          Just _ -> TIO.putStrLn postURL
+          Just concatenatedText -> do
+            shouldPrint <- checkSimilarityScores config concatenatedText
+            when shouldPrint $ TIO.putStrLn postURL
 
 main :: IO ()
 main = do
