@@ -81,13 +81,13 @@ fetchRedditRSS subredditURL = do
   response <- httpLbs requestWithHeaders
   let rssContent = responseBody response
   threadDelay 1000000 -- pause for 1 second
-  return $ parseFeedSource rssContent
+  pure $ parseFeedSource rssContent
 
 getPostData :: Item -> Maybe (Text, UTCTime)
 getPostData p = do
   link <- getItemLink p
   pubDate <- join (getItemPublishDate p)
-  return (link, pubDate)
+  pure (link, pubDate)
 
 data SimilarityRequest = SimilarityRequest
   { example :: Text,
@@ -107,16 +107,16 @@ getSimilarityScore text1 text2 = do
           $ initialRequest
   response <- httpJSON request
   let score = getResponseBody response :: Double
-  return score
+  pure score
 
 checkSimilarityScores :: Config -> Text -> IO Bool
 checkSimilarityScores config postText = do
   let checkScore commentConfig = do
         similarityScore <- getSimilarityScore postText (text commentConfig)
-        return $ similarityScore >= threshold commentConfig
+        pure $ similarityScore >= threshold commentConfig
 
   results <- mapM checkScore (elems config)
-  return $ or results
+  pure $ or results
 
 getPostText :: Text -> IO (Maybe Text)
 getPostText postURL = do
@@ -124,19 +124,19 @@ getPostText postURL = do
   case rssFeed of
     Nothing -> do
       print $ "Error: could not fetch RSS feed for " <> postURL
-      return Nothing
+      pure Nothing
     Just feed -> do
       case getFeedItems feed of
         [] -> do
           print $ "Error: no items in RSS feed for " <> postURL
-          return Nothing
-        (p : _) -> return $ getItemTitle p <> Just "\n" <> getItemContent p
+          pure Nothing
+        (p : _) -> pure $ getItemTitle p <> Just "\n" <> getItemContent p
 
 printPostURL :: Config -> Text -> IO ()
 printPostURL config postURL = do
   postText <- getPostText postURL
   case postText of
-    Nothing -> return ()
+    Nothing -> pure ()
     Just postText' -> do
       shouldPrint <- checkSimilarityScores config postText'
       when shouldPrint $ TIO.putStrLn postURL
@@ -161,11 +161,11 @@ fetchAndPrintScores :: Config -> Text -> IO ()
 fetchAndPrintScores config postURL = do
   postText <- getPostText postURL
   case postText of
-    Nothing -> return ()
+    Nothing -> pure ()
     Just postText' -> do
       let calcScore (commentURI, commentConfig) = do
             similarityScore <- getSimilarityScore postText' (text commentConfig)
-            return (commentURI, similarityScore)
+            pure (commentURI, similarityScore)
 
       scores <- mapM calcScore (HM.toList config)
       traverse_ printScore scores
