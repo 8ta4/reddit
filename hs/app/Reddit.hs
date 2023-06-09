@@ -94,12 +94,12 @@ data SimilarityRequest = SimilarityRequest
 instance ToJSON SimilarityRequest
 
 getSimilarityScore :: Text -> Text -> IO Double
-getSimilarityScore concatenatedText text = do
+getSimilarityScore text1 text2 = do
   initialRequest <- parseRequest "http://localhost:8080"
   let request =
         setRequestMethod "POST"
           . setRequestPath "/"
-          . setRequestBodyJSON (SimilarityRequest concatenatedText text)
+          . setRequestBodyJSON (SimilarityRequest text1 text2)
           $ initialRequest
   response <- httpJSON request
   let score = getResponseBody response :: Double
