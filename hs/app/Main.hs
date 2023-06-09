@@ -1,5 +1,6 @@
 module Main (main) where
 
+import Data.Text (Text)
 import Data.Yaml (prettyPrintParseException)
 import Options.Applicative (Alternative ((<|>)), Parser, argument, command, execParser, fullDesc, header, helper, info, metavar, progDesc, str, subparser, (<**>))
 import Reddit
@@ -9,7 +10,7 @@ import Prelude
 
 data Command
   = Default
-  | Scores String
+  | Scores Text
 
 commandParser :: Parser Command
 commandParser =
@@ -32,11 +33,14 @@ defaultAction = do
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
     Right m -> fetchAndPrintPosts m
 
-scoresAction :: String -> IO ()
+scoresAction :: Text -> IO ()
 scoresAction url = do
-  putStrLn $ "Calculating scores for: " ++ url
-
--- Implement your logic for calculating scores here
+  homeDir <- getHomeDirectory
+  let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
+  config <- parseConfigFile configFile
+  case config of
+    Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
+    Right m -> fetchAndPrintScores m url
 
 main :: IO ()
 main = do
