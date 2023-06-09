@@ -46,15 +46,15 @@ scoresAction url = withConfig (`fetchAndPrintScores` url)
 
 isServerRunning :: IO Bool
 isServerRunning = do
-  (getSimilarityScore "test" "test" >> return True) `catch` handleHttpException
+  (getSimilarityScore "test" "test" >> pure True) `catch` handleHttpException
   where
     handleHttpException :: HttpException -> IO Bool
-    handleHttpException _ = return False
+    handleHttpException _ = pure False
 
 startClojureServer :: IO ()
 startClojureServer = do
   _ <- createProcess (proc "lein" ["run"]) {cwd = Just "../clj"}
-  return ()
+  pure ()
 
 waitForServer :: IO ()
 waitForServer = do
