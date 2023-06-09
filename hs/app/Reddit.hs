@@ -117,19 +117,28 @@ checkSimilarityScores config postText = do
   results <- mapM checkScore (elems config)
   return $ or results
 
-printPostURL :: Config -> Text -> IO ()
-printPostURL config postURL = do
+getPostText :: Text -> IO (Maybe Text)
+getPostText postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
   case rssFeed of
-    Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
+    Nothing -> do
+      print $ "Error: could not fetch RSS feed for " <> postURL
+      return Nothing
     Just feed -> do
       case getFeedItems feed of
-        [] -> print $ "Error: no items in RSS feed for " <> postURL
-        (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
-          Nothing -> print $ "Error: could not get title or content for " <> postURL
-          Just postText -> do
-            shouldPrint <- checkSimilarityScores config postText
-            when shouldPrint $ TIO.putStrLn postURL
+        [] -> do
+          print $ "Error: no items in RSS feed for " <> postURL
+          return Nothing
+        (p : _) -> return $ getItemTitle p <> Just "\n" <> getItemContent p
+
+printPostURL :: Config -> Text -> IO ()
+printPostURL config postURL = do
+  postText <- getPostText postURL
+  case postText of
+    Nothing -> return ()
+    Just postText' -> do
+      shouldPrint <- checkSimilarityScores config postText'
+      when shouldPrint $ TIO.putStrLn postURL
 
 fetchAndPrintPosts :: Config -> IO ()
 fetchAndPrintPosts m = do
@@ -143,18 +152,13 @@ fetchAndPrintPosts m = do
 
 fetchAndPrintScores :: Config -> Text -> IO ()
 fetchAndPrintScores config postURL = do
-  rssFeed <- fetchRedditRSS $ postURL <> ".rss"
-  case rssFeed of
-    Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
-    Just feed -> do
-      case getFeedItems feed of
-        [] -> print $ "Error: no items in RSS feed for " <> postURL
-        (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
-          Nothing -> print $ "Error: could not get title or content for " <> postURL
-          Just postText -> do
-            let calcScore (commentURI, commentConfig) = do
-                  similarityScore <- getSimilarityScore postText (text commentConfig)
-                  return (commentURI, similarityScore)
+  postText <- getPostText postURL
+  case postText of
+    Nothing -> return ()
+    Just postText' -> do
+      let calcScore (commentURI, commentConfig) = do
+            similarityScore <- getSimilarityScore postText' (text commentConfig)
+            return (commentURI, similarityScore)
 
-            scores <- mapM calcScore (HM.toList config)
-            traverse_ (\(commentURI, score) -> putStrLn $ show commentURI ++ ": " ++ show score) scores
+      scores <- mapM calcScore (HM.toList config)
+      traverse_ (\(commentURI, score) -> putStrLn $ show commentURI ++ ": " ++ show score) scores
