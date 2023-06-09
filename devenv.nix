@@ -8,21 +8,11 @@
     pkgs.leiningen
     pkgs.ghcid
     pkgs.git
-    pkgs.lsof
   ];
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
   scripts.start.exec = ''
-    cd "$DEVENV_ROOT/clj"
-    ${pkgs.leiningen}/bin/lein run &
-
-    CLOJURE_SERVER_PORT=8080
-    while ! ${pkgs.lsof}/bin/lsof -i :$CLOJURE_SERVER_PORT | grep -q "LISTEN"; do
-      echo "Waiting for Clojure server to start on port $CLOJURE_SERVER_PORT..."
-      sleep 1
-    done
-
     cd "$DEVENV_ROOT/hs"
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
