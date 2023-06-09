@@ -1,6 +1,7 @@
 module Reddit
   ( parseConfigFile,
     fetchAndPrintPosts,
+    fetchAndPrintScores,
   )
 where
 
@@ -8,8 +9,10 @@ import Control.Concurrent (threadDelay)
 import Control.Lens (ix, (^?))
 import Control.Monad (join, when)
 import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser, ToJSON)
-import Data.Foldable (toList, traverse_)
+import Data.Foldable (traverse_)
+import Data.Foldable qualified as F
 import Data.HashMap.Strict (HashMap, elems, keys)
+import Data.HashMap.Strict qualified as HM
 import Data.HashSet (HashSet, fromList)
 import Data.Hashable (Hashable (..))
 import Data.List (isPrefixOf, isSuffixOf, sortOn)
@@ -110,6 +113,7 @@ checkSimilarityScores config postText = do
   let checkScore commentConfig = do
         similarityScore <- getSimilarityScore postText (text commentConfig)
         return $ similarityScore >= threshold commentConfig
+
   results <- mapM checkScore (elems config)
   return $ or results
 
@@ -130,9 +134,27 @@ printPostURL config postURL = do
 fetchAndPrintPosts :: Config -> IO ()
 fetchAndPrintPosts m = do
   let subredditURLs = getSubredditURLs m
-  rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
+  rssFeeds <- catMaybes <$> traverse fetchRedditRSS (F.toList subredditURLs)
   let posts = concatMap getFeedItems rssFeeds
   let postData = mapMaybe getPostData posts
   let sortedData = sortOn (Down . snd) postData
   let postURLs = map fst sortedData
   traverse_ (printPostURL m) postURLs
+
+fetchAndPrintScores :: Config -> Text -> IO ()
+fetchAndPrintScores config postURL = do
+  rssFeed <- fetchRedditRSS $ postURL <> ".rss"
+  case rssFeed of
+    Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
+    Just feed -> do
+      case getFeedItems feed of
+        [] -> print $ "Error: no items in RSS feed for " <> postURL
+        (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
+          Nothing -> print $ "Error: could not get title or content for " <> postURL
+          Just postText -> do
+            let calcScore (commentURI, commentConfig) = do
+                  similarityScore <- getSimilarityScore postText (text commentConfig)
+                  return (commentURI, similarityScore)
+
+            scores <- mapM calcScore (HM.toList config)
+            traverse_ (\(commentURI, score) -> putStrLn $ show commentURI ++ ": " ++ show score) scores
