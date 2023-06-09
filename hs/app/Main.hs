@@ -1,20 +1,16 @@
 module Main (main) where
 
-import Data.Foldable (toList, traverse_)
-import Data.List (sortOn)
-import Data.Maybe (catMaybes, mapMaybe)
-import Data.Ord (Down (Down))
+import Data.Text (Text)
 import Data.Yaml (prettyPrintParseException)
 import Options.Applicative (Alternative ((<|>)), Parser, argument, command, execParser, fullDesc, header, helper, info, metavar, progDesc, str, subparser, (<**>))
 import Reddit
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
-import Text.Feed.Query (getFeedItems)
 import Prelude
 
 data Command
   = Default
-  | Scores String
+  | Scores Text
 
 commandParser :: Parser Command
 commandParser =
@@ -28,31 +24,20 @@ commandParser =
           )
       )
 
-defaultAction :: IO ()
-defaultAction = do
+withConfig :: (Config -> IO ()) -> IO ()
+withConfig action = do
   homeDir <- getHomeDirectory
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
-  putStrLn configFile
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> do
-      let subredditURLs = getSubredditURLs m
-      rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
-      let posts = concatMap getFeedItems rssFeeds
+    Right m -> action m
 
-      let postData = mapMaybe getPostData posts
-      let sortedData = sortOn (Down . snd) postData
-      let postURLs = map fst sortedData
+defaultAction :: IO ()
+defaultAction = withConfig fetchAndPrintPosts
 
-      print m
-      traverse_ (printPostURL m) postURLs
-
-scoresAction :: String -> IO ()
-scoresAction url = do
-  putStrLn $ "Calculating scores for: " ++ url
-
--- Implement your logic for calculating scores here
+scoresAction :: Text -> IO ()
+scoresAction url = withConfig (`fetchAndPrintScores` url)
 
 main :: IO ()
 main = do

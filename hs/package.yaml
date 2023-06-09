@@ -84,7 +84,7 @@ library:
   source-dirs: src
 
 executables:
-  hs-exe:
+  reddit:
     main: Main.hs
     source-dirs: app
     ghc-options:

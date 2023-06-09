@@ -1,15 +1,8 @@
 module Reddit
-  ( CommentConfig (..),
-    CommentURI (..),
-    Config,
+  ( Config,
     parseConfigFile,
-    getSubredditURLs,
-    fetchRedditRSS,
-    getPostData,
-    SimilarityRequest (..),
-    getSimilarityScore,
-    checkSimilarityScores,
-    printPostURL,
+    fetchAndPrintPosts,
+    fetchAndPrintScores,
   )
 where
 
@@ -17,10 +10,15 @@ import Control.Concurrent (threadDelay)
 import Control.Lens (ix, (^?))
 import Control.Monad (join, when)
 import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser, ToJSON)
+import Data.Foldable (traverse_)
+import Data.Foldable qualified as F
 import Data.HashMap.Strict (HashMap, elems, keys)
+import Data.HashMap.Strict qualified as HM
 import Data.HashSet (HashSet, fromList)
 import Data.Hashable (Hashable (..))
-import Data.List (isPrefixOf, isSuffixOf)
+import Data.List (isPrefixOf, isSuffixOf, sortOn)
+import Data.Maybe (catMaybes, mapMaybe)
+import Data.Ord
 import Data.Text (Text, pack, splitOn, unpack)
 import Data.Text.IO qualified as TIO
 import Data.Time.Clock (UTCTime)
@@ -100,38 +98,74 @@ data SimilarityRequest = SimilarityRequest
 instance ToJSON SimilarityRequest
 
 getSimilarityScore :: Text -> Text -> IO Double
-getSimilarityScore concatenatedText text = do
+getSimilarityScore text1 text2 = do
   initialRequest <- parseRequest "http://localhost:8080"
   let request =
         setRequestMethod "POST"
           . setRequestPath "/"
-          . setRequestBodyJSON (SimilarityRequest concatenatedText text)
+          . setRequestBodyJSON (SimilarityRequest text1 text2)
           $ initialRequest
   response <- httpJSON request
   let score = getResponseBody response :: Double
   return score
 
 checkSimilarityScores :: Config -> Text -> IO Bool
-checkSimilarityScores config concatenatedText = do
+checkSimilarityScores config postText = do
   let checkScore commentConfig = do
-        similarityScore <- getSimilarityScore concatenatedText (text commentConfig)
-        print similarityScore
-        print $ threshold commentConfig
+        similarityScore <- getSimilarityScore postText (text commentConfig)
         return $ similarityScore >= threshold commentConfig
 
   results <- mapM checkScore (elems config)
   return $ or results
 
-printPostURL :: Config -> Text -> IO ()
-printPostURL config postURL = do
+getPostText :: Text -> IO (Maybe Text)
+getPostText postURL = do
   rssFeed <- fetchRedditRSS $ postURL <> ".rss"
   case rssFeed of
-    Nothing -> print $ "Error: could not fetch RSS feed for " <> postURL
+    Nothing -> do
+      print $ "Error: could not fetch RSS feed for " <> postURL
+      return Nothing
     Just feed -> do
       case getFeedItems feed of
-        [] -> print $ "Error: no items in RSS feed for " <> postURL
-        (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
-          Nothing -> print $ "Error: could not get title or content for " <> postURL
-          Just concatenatedText -> do
-            shouldPrint <- checkSimilarityScores config concatenatedText
-            when shouldPrint $ TIO.putStrLn postURL
+        [] -> do
+          print $ "Error: no items in RSS feed for " <> postURL
+          return Nothing
+        (p : _) -> return $ getItemTitle p <> Just "\n" <> getItemContent p
+
+printPostURL :: Config -> Text -> IO ()
+printPostURL config postURL = do
+  postText <- getPostText postURL
+  case postText of
+    Nothing -> return ()
+    Just postText' -> do
+      shouldPrint <- checkSimilarityScores config postText'
+      when shouldPrint $ TIO.putStrLn postURL
+
+fetchAndPrintPosts :: Config -> IO ()
+fetchAndPrintPosts m = do
+  let subredditURLs = getSubredditURLs m
+  rssFeeds <- catMaybes <$> traverse fetchRedditRSS (F.toList subredditURLs)
+  let posts = concatMap getFeedItems rssFeeds
+  let postData = mapMaybe getPostData posts
+  let sortedData = sortOn (Down . snd) postData
+  let postURLs = map fst sortedData
+  traverse_ (printPostURL m) postURLs
+
+uriFromCommentURI :: CommentURI -> String
+uriFromCommentURI (CommentURI uri) = show uri
+
+printScore :: (CommentURI, Double) -> IO ()
+printScore (commentURI, score) = putStrLn $ uriFromCommentURI commentURI ++ " " ++ show score
+
+fetchAndPrintScores :: Config -> Text -> IO ()
+fetchAndPrintScores config postURL = do
+  postText <- getPostText postURL
+  case postText of
+    Nothing -> return ()
+    Just postText' -> do
+      let calcScore (commentURI, commentConfig) = do
+            similarityScore <- getSimilarityScore postText' (text commentConfig)
+            return (commentURI, similarityScore)
+
+      scores <- mapM calcScore (HM.toList config)
+      traverse_ printScore scores
