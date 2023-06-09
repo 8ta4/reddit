@@ -1,5 +1,6 @@
 module Reddit
-  ( parseConfigFile,
+  ( Config,
+    parseConfigFile,
     fetchAndPrintPosts,
     fetchAndPrintScores,
   )

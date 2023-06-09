@@ -24,23 +24,20 @@ commandParser =
           )
       )
 
-defaultAction :: IO ()
-defaultAction = do
+withConfig :: (Config -> IO ()) -> IO ()
+withConfig action = do
   homeDir <- getHomeDirectory
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> fetchAndPrintPosts m
+    Right m -> action m
+
+defaultAction :: IO ()
+defaultAction = withConfig fetchAndPrintPosts
 
 scoresAction :: Text -> IO ()
-scoresAction url = do
-  homeDir <- getHomeDirectory
-  let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
-  config <- parseConfigFile configFile
-  case config of
-    Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> fetchAndPrintScores m url
+scoresAction url = withConfig (`fetchAndPrintScores` url)
 
 main :: IO ()
 main = do
