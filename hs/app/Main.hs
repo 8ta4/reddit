@@ -1,15 +1,10 @@
 module Main (main) where
 
-import Data.Foldable (toList, traverse_)
-import Data.List (sortOn)
-import Data.Maybe (catMaybes, mapMaybe)
-import Data.Ord (Down (Down))
 import Data.Yaml (prettyPrintParseException)
 import Options.Applicative (Alternative ((<|>)), Parser, argument, command, execParser, fullDesc, header, helper, info, metavar, progDesc, str, subparser, (<**>))
 import Reddit
 import System.Directory (getHomeDirectory)
 import System.FilePath ((</>))
-import Text.Feed.Query (getFeedItems)
 import Prelude
 
 data Command
@@ -35,14 +30,7 @@ defaultAction = do
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
-    Right m -> do
-      let subredditURLs = getSubredditURLs m
-      rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
-      let posts = concatMap getFeedItems rssFeeds
-      let postData = mapMaybe getPostData posts
-      let sortedData = sortOn (Down . snd) postData
-      let postURLs = map fst sortedData
-      traverse_ (printPostURL m) postURLs
+    Right m -> fetchAndPrintPosts m
 
 scoresAction :: String -> IO ()
 scoresAction url = do

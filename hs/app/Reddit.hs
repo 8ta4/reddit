@@ -1,15 +1,6 @@
 module Reddit
-  ( CommentConfig (..),
-    CommentURI (..),
-    Config,
-    parseConfigFile,
-    getSubredditURLs,
-    fetchRedditRSS,
-    getPostData,
-    SimilarityRequest (..),
-    getSimilarityScore,
-    checkSimilarityScores,
-    printPostURL,
+  ( parseConfigFile,
+    fetchAndPrintPosts,
   )
 where
 
@@ -17,10 +8,13 @@ import Control.Concurrent (threadDelay)
 import Control.Lens (ix, (^?))
 import Control.Monad (join, when)
 import Data.Aeson.Types (FromJSONKey (..), FromJSONKeyFunction (..), Parser, ToJSON)
+import Data.Foldable (toList, traverse_)
 import Data.HashMap.Strict (HashMap, elems, keys)
 import Data.HashSet (HashSet, fromList)
 import Data.Hashable (Hashable (..))
-import Data.List (isPrefixOf, isSuffixOf)
+import Data.List (isPrefixOf, isSuffixOf, sortOn)
+import Data.Maybe (catMaybes, mapMaybe)
+import Data.Ord
 import Data.Text (Text, pack, splitOn, unpack)
 import Data.Text.IO qualified as TIO
 import Data.Time.Clock (UTCTime)
@@ -132,3 +126,13 @@ printPostURL config postURL = do
           Just concatenatedText -> do
             shouldPrint <- checkSimilarityScores config concatenatedText
             when shouldPrint $ TIO.putStrLn postURL
+
+fetchAndPrintPosts :: Config -> IO ()
+fetchAndPrintPosts m = do
+  let subredditURLs = getSubredditURLs m
+  rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
+  let posts = concatMap getFeedItems rssFeeds
+  let postData = mapMaybe getPostData posts
+  let sortedData = sortOn (Down . snd) postData
+  let postURLs = map fst sortedData
+  traverse_ (printPostURL m) postURLs
