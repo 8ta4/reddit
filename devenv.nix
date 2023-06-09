@@ -16,6 +16,13 @@
     cd "$DEVENV_ROOT/hs"
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
+  scripts.reddit.exec = ''
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.haskellPackages.stack}/bin/stack build --fast
+    DIST_DIR_PATH=$(${pkgs.haskellPackages.stack}/bin/stack path --dist-dir)
+    REDDIT_EXECUTABLE="$DIST_DIR_PATH/build/reddit/reddit"
+    "$REDDIT_EXECUTABLE" $@
+  '';
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
