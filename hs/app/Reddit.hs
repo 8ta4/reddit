@@ -3,6 +3,7 @@ module Reddit
     parseConfigFile,
     fetchAndPrintPosts,
     fetchAndPrintScores,
+    getSimilarityScore,
   )
 where
 
