@@ -153,6 +153,9 @@ fetchAndPrintPosts m = do
 uriFromCommentURI :: CommentURI -> String
 uriFromCommentURI (CommentURI uri) = show uri
 
+printScore :: (CommentURI, Double) -> IO ()
+printScore (commentURI, score) = putStrLn $ uriFromCommentURI commentURI ++ " " ++ show score
+
 fetchAndPrintScores :: Config -> Text -> IO ()
 fetchAndPrintScores config postURL = do
   postText <- getPostText postURL
@@ -164,4 +167,4 @@ fetchAndPrintScores config postURL = do
             return (commentURI, similarityScore)
 
       scores <- mapM calcScore (HM.toList config)
-      traverse_ (\(commentURI, score) -> putStrLn $ uriFromCommentURI commentURI ++ " " ++ show score) scores
+      traverse_ printScore scores
