@@ -106,9 +106,9 @@ getSimilarityScore text1 text2 = do
   return score
 
 checkSimilarityScores :: Config -> Text -> IO Bool
-checkSimilarityScores config concatenatedText = do
+checkSimilarityScores config postText = do
   let checkScore commentConfig = do
-        similarityScore <- getSimilarityScore concatenatedText (text commentConfig)
+        similarityScore <- getSimilarityScore postText (text commentConfig)
         return $ similarityScore >= threshold commentConfig
   results <- mapM checkScore (elems config)
   return $ or results
@@ -123,8 +123,8 @@ printPostURL config postURL = do
         [] -> print $ "Error: no items in RSS feed for " <> postURL
         (p : _) -> case getItemTitle p <> Just "\n" <> getItemContent p of
           Nothing -> print $ "Error: could not get title or content for " <> postURL
-          Just concatenatedText -> do
-            shouldPrint <- checkSimilarityScores config concatenatedText
+          Just postText -> do
+            shouldPrint <- checkSimilarityScores config postText
             when shouldPrint $ TIO.putStrLn postURL
 
 fetchAndPrintPosts :: Config -> IO ()
