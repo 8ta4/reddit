@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   # https://devenv.sh/basics/
   env.GREET = "devenv";
@@ -13,10 +12,16 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-
-  enterShell = ''
-    hello
-    git --version
+  scripts.start.exec = ''
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
+  '';
+  scripts.reddit.exec = ''
+    cd "$DEVENV_ROOT/hs"
+    ${pkgs.haskellPackages.stack}/bin/stack build --fast
+    DIST_DIR_PATH=$(${pkgs.haskellPackages.stack}/bin/stack path --dist-dir)
+    REDDIT_EXECUTABLE="$DIST_DIR_PATH/build/reddit/reddit"
+    "$REDDIT_EXECUTABLE" $@
   '';
 
   # https://devenv.sh/languages/
