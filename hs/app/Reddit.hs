@@ -115,10 +115,7 @@ checkSimilarityScores :: Config -> Text -> IO Bool
 checkSimilarityScores config concatenatedText = do
   let checkScore commentConfig = do
         similarityScore <- getSimilarityScore concatenatedText (text commentConfig)
-        print similarityScore
-        print $ threshold commentConfig
         return $ similarityScore >= threshold commentConfig
-
   results <- mapM checkScore (elems config)
   return $ or results
 

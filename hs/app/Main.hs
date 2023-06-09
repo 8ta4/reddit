@@ -32,7 +32,6 @@ defaultAction :: IO ()
 defaultAction = do
   homeDir <- getHomeDirectory
   let configFile = homeDir </> ".config" </> "reddit" </> "config.yaml"
-  putStrLn configFile
   config <- parseConfigFile configFile
   case config of
     Left e -> putStrLn $ "Error: " ++ prettyPrintParseException e
@@ -40,12 +39,9 @@ defaultAction = do
       let subredditURLs = getSubredditURLs m
       rssFeeds <- catMaybes <$> traverse fetchRedditRSS (toList subredditURLs)
       let posts = concatMap getFeedItems rssFeeds
-
       let postData = mapMaybe getPostData posts
       let sortedData = sortOn (Down . snd) postData
       let postURLs = map fst sortedData
-
-      print m
       traverse_ (printPostURL m) postURLs
 
 scoresAction :: String -> IO ()
