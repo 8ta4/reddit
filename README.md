@@ -16,19 +16,14 @@ It uses fancy stuff like natural language processing and machine learning to und
 
 > How do I install the tool?
 
-The tool comes as a Nix package, so you don't have to worry about dependencies. Just make sure you have Nix installed on your system. If you don't, you can download and install it from the [Nix download page](https://nixos.org/download.html).
+You need to install devenv and direnv. Check out the [devenv getting started page](https://devenv.sh/getting-started/#installation) and the [direnv installation guide](https://devenv.sh/automatic-shell-activation/#installing-direnv) to get them set up on your system.
 
-Before installing the tool, ensure that flakes support is enabled in your Nix setup. You can find instructions on how to enable flakes support at [Enable Flakes](https://nixos.wiki/wiki/Flakes#Enable_flakes).
-
-Once you've got Nix with flakes support, just run this command in your terminal to install the Reddit tool:
+Once you've got devenv and direnv installed, just run these commands to clone the repository and get into the project root:
 
 ```bash
-nix profile install github:8ta4/reddit
+git clone https://github.com/8ta4/reddit.git
+cd reddit
 ```
-
-> Why use a Nix package?
-
-Nix packages are awesome because they take care of all dependencies for you, making installation a breeze. Plus, Nix offers atomic upgrades and rollbacks, so you can easily switch between different versions of the Reddit tool without any issues.
 
 ## Marking Examples
 
@@ -102,3 +97,13 @@ It uses cosine similarity to compare the text of the examples with the text of t
 > How will the tool notify me of similar posts?
 
 In the MVP, the tool won't send real-time notifications like email or in-app notifications. Instead, it'll write similar posts to `stdout`. You can set up your own watch tools to keep an eye on the output and notify you when there are changes. That way, you can customize your notifications and still stay in the loop.
+
+## Updating the Tool
+
+> How do I update the tool?
+
+Just make sure you're in the project root directory. If you're not there, use the `cd` command to navigate to it. Then, run this command to pull the latest changes from the repository:
+
+```bash
+git pull
+```
