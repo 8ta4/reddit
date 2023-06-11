@@ -18,11 +18,10 @@ It uses fancy stuff like natural language processing and machine learning to und
 
 You need to install devenv and direnv. Check out the [devenv getting started page](https://devenv.sh/getting-started/#installation) and the [direnv installation guide](https://devenv.sh/automatic-shell-activation/#installing-direnv) to get them set up on your system.
 
-Once you've got devenv and direnv installed, just run these commands to clone the repository and get into the project root:
+Once you've got devenv and direnv installed, just run this command:
 
 ```bash
-git clone https://github.com/8ta4/reddit.git
-cd reddit
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/8ta4/reddit/main/install.sh)"
 ```
 
 ## Marking Examples
@@ -102,7 +101,7 @@ In the MVP, the tool won't send real-time notifications like email or in-app not
 
 > How do I update the tool?
 
-Just make sure you're in the project root directory. If you're not there, use the `cd` command to navigate to it. Then, run this command to pull the latest changes from the repository:
+Just make sure you're in the project root directory. If you're not there, use the `cd` command to navigate to it. Then, run this command:
 
 ```bash
 git pull
