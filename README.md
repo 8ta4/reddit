@@ -18,12 +18,10 @@ It uses fancy stuff like natural language processing and machine learning to und
 
 You need to install devenv and direnv. Check out the [devenv getting started page](https://devenv.sh/getting-started/#installation) and the [direnv installation guide](https://devenv.sh/automatic-shell-activation/#installing-direnv) to get them set up on your system.
 
-Once you've got devenv and direnv installed, just run these commands:
+Once you've got devenv and direnv installed, just run this command:
 
 ```bash
-git clone https://github.com/8ta4/reddit.git
-cd reddit
-direnv allow
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/8ta4/reddit/main/install.sh)"
 ```
 
 ## Marking Examples
