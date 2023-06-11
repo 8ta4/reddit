@@ -12,18 +12,20 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.reddit.exec = ''
-    cd "$DEVENV_ROOT"
-    ${pkgs.poetry}/bin/poetry install -q
+  scripts.install.exec = ''
+    ${pkgs.poetry}/bin/poetry install
+    cd "$DEVENV_ROOT/clj"
+    ${pkgs.leiningen}/bin/lein deps
     cd "$DEVENV_ROOT/hs"
     ${pkgs.haskellPackages.stack}/bin/stack build --fast
+  '';
+  scripts.reddit.exec = ''
+    cd "$DEVENV_ROOT/hs"
     DIST_DIR_PATH=$(${pkgs.haskellPackages.stack}/bin/stack path --dist-dir)
     REDDIT_EXECUTABLE="$DIST_DIR_PATH/build/reddit/reddit"
     "$REDDIT_EXECUTABLE" $@
   '';
   scripts.run.exec = ''
-    cd "$DEVENV_ROOT"
-    ${pkgs.poetry}/bin/poetry install
     cd "$DEVENV_ROOT/hs"
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
