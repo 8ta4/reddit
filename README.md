@@ -21,7 +21,7 @@ You need to install devenv and direnv. Check out the [devenv getting started pag
 Once you've got devenv and direnv installed, just run this command:
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/8ta4/reddit/main/install.sh)"
+source <(curl -fsSL https://raw.githubusercontent.com/8ta4/reddit/main/install.sh)
 ```
 
 ## Marking Examples
