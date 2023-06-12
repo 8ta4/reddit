@@ -12,8 +12,7 @@
 
   # https://devenv.sh/scripts/
   scripts.hello.exec = "echo hello from $GREET";
-  scripts.install.exec = ''
-    ${pkgs.poetry}/bin/poetry install
+  scripts.build.exec = ''
     cd "$DEVENV_ROOT/clj"
     ${pkgs.leiningen}/bin/lein deps
     cd "$DEVENV_ROOT/hs"
