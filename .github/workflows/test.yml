@@ -22,9 +22,5 @@ jobs:
         shell: sh
       - run: devenv ci
       - run: devenv shell echo ok
-      - name: Test Leiningen application
-        run: lein test
-        working-directory: ./clj
-      - name: Test Stack application
-        run: stack test
-        working-directory: ./hs
+      - run: devenv shell build
+      - run: devenv shell reddit -h
