@@ -72,16 +72,16 @@ https://www.reddit.com/r/example/comments/456def/another_post_title/:
 
 Just run the `reddit` command.
 
-```
-$ reddit
+```bash
+reddit
 ```
 
 > What if I want to see the similarity scores for a specific post?
 
 You can use the `reddit scores` command for that. Just pop in the post's URL after the command, like this:
 
-```
-$ reddit scores https://www.reddit.com/r/example/comments/123abc/some_post_title/
+```bash
+reddit scores https://www.reddit.com/r/example/comments/123abc/some_post_title/
 ```
 
 The tool will show you the similarity scores for that post compared to each example in your config file.
