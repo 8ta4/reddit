@@ -70,7 +70,7 @@ https://www.reddit.com/r/example/comments/456def/another_post_title/:
 
 > So, how do I actually use this tool to find matching posts?
 
-Just run the `reddit` command.
+First, make sure you're in the project root directory. If you're not there, use the `cd` command to navigate to it. Then, just run the `reddit` command.
 
 ```bash
 reddit
