@@ -32,15 +32,6 @@ cd reddit
 You'll need to create or modify a YAML file to mark a post. The file should look like this:
 
 ```
-{{URL}}:
-  text: |
-    {{text}}
-  threshold: {{threshold}}
-```
-
-Replace `{{URL}}`, `{{text}}`, and `{{threshold}}` with the right values for the post you want to mark. For example:
-
-```
 https://www.reddit.com/r/example/comments/123abc/some_post_title/:
   text: |
     Post content here...
