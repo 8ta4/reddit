@@ -5,9 +5,9 @@
 
   # https://devenv.sh/packages/
   packages = [
-    pkgs.leiningen
     pkgs.ghcid
     pkgs.git
+    pkgs.leiningen
   ];
 
   # https://devenv.sh/scripts/
