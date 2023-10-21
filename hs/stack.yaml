@@ -49,7 +49,7 @@ packages:
 # extra-package-dbs: []
 
 # Control whether we use the GHC we find on the path
-# https://www.reddit.com/r/haskell/comments/uk5wg7/comment/i7n990t/?utm_source=reddit&utm_medium=web2x&context=3#:~:text=try%20installing%20ghc-9.0.2%20with%20ghcup%20and%20adding%20the%20line%20system-ghc%3A%20true%20to%20your%20stack.yaml.
+# https://docs.haskellstack.org/en/stable/yaml_configuration/#system-ghc:~:text=In%20a%20Nix,ghc%3A%20true
 system-ghc: true
 #
 # Require a specific version of stack, using version ranges
