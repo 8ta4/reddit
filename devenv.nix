@@ -31,6 +31,7 @@
 
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
+  # TODO: Remove Clojure support
   languages.clojure.enable = true;
   languages.haskell.enable = true;
   languages.python = {
