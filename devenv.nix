@@ -29,6 +29,8 @@
     ${pkgs.ghcid}/bin/ghcid --command="${pkgs.stack}/bin/stack ghci" -T="main" --warnings
   '';
 
+  # TODO: Incorporate dependency installation via enterShell
+
   # https://devenv.sh/languages/
   # languages.nix.enable = true;
   # TODO: Remove Clojure support
