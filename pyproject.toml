@@ -6,11 +6,9 @@ authors = ["Your Name <you@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "3.10.11"
+python = "3.11.9"
 sentence-transformers = "2.2.2"
-# TODO: Update torch
-torch = "1.13.1"
-
+torch = "2.4.0"
 
 [build-system]
 requires = ["poetry-core"]
