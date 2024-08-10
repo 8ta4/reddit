@@ -8,7 +8,7 @@
     pkgs.ghcid
     pkgs.git
     pkgs.gitleaks
-    pkgs.leiningen
+    pkgs.jdk19
   ];
 
   # https://devenv.sh/scripts/
