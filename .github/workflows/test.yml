@@ -9,6 +9,7 @@ jobs:
   tests:
     strategy:
       matrix:
+        # Removed 'ubuntu-latest' due to "No space left on device" error
         os: [macos-14]
     runs-on: ${{ matrix.os }}
     steps:
