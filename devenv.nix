@@ -9,6 +9,7 @@
     pkgs.git
     pkgs.gitleaks
     pkgs.jdk19
+    # Not using pkgs.leiningen because libpython-clj doesn't seem to support JDK 21
   ];
 
   # https://devenv.sh/scripts/
