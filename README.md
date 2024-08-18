@@ -83,6 +83,10 @@ The tool will show you the similarity scores for that post compared to each exam
 
 It uses cosine similarity to compare the text of the examples with the text of the new posts.
 
+> Which parts of Reddit does this tool search?
+
+It'll check out all the subreddits where you've added posts as examples in your config file.
+
 ## Real-time Notifications
 
 > How will the tool notify me of similar posts?
